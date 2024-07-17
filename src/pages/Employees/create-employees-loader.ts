@@ -5,9 +5,8 @@ import { getAllEmployeesInfo } from '../../lib/employees/usecases/get-all-employ
 export const createEmployeesLoader =
   ({ store }: { store: AppStore }): LoaderFunction =>
   async () => {
-    if (!store.getState().employee.info) {
+    if (!store.getState().employee.info.entities.length) {
       await store.dispatch(getAllEmployeesInfo())
     }
-
     return null
   }

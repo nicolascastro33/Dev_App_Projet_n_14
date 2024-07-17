@@ -3,37 +3,60 @@ import HomeLayout from './home.layout'
 import { EmployeesInfo } from '../../lib/employees/model/employee.gateway'
 import { useDispatch } from 'react-redux'
 import { addOneNewEmployee } from '../../lib/employees/usecases/add-one-new-employee'
+import Modal from '../../components/Modal'
+import { AppDispatch } from '../../lib/create-store'
 
 function HomeController() {
-  const [savingEmployee, setSavingEmployee] = useState(false)
-  const [employeeCreated, setEmployeeCreated] = useState(false)
-  const dispatch = useDispatch()
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState(false)
+  const [isModalOpened, setIsModalOpened] = useState(false)
+  const dispatch = useDispatch<AppDispatch>()
+
+  const closeModal = () => {
+    document.body.style.overflow = 'unset'
+    setIsModalOpened(false)
+  }
 
   const saveEmployee = (e: any): void => {
     e.preventDefault()
-    setSavingEmployee(true)
+    setIsLoading(true)
     const newEmployeeData: Omit<EmployeesInfo, 'id'> = {
-      firstName: e.target.firstName,
-      lastName: e.target.lastName,
-      dateOfBirth: e.target.dateOfBirth,
-      startDate: e.target.startDate,
-      department: e.target.department,
-      city: e.target.city,
-      street: e.target.street,
-      state: e.target.state,
-      zipCode: e.target.zipCode,
+      firstName: e.target.firstName.value,
+      lastName: e.target.lastName.value,
+      dateOfBirth: e.target.dateOfBirth.value,
+      startDate: e.target.startDate.value,
+      department: e.target.department.value,
+      city: e.target.city.value,
+      street: e.target.street.value,
+      state: e.target.state.value,
+      zipCode: e.target.zipCode.value,
+    }
+
+    for (const [value] of Object.entries(newEmployeeData)) {
+      typeof value
+      if (!value) {
+        setError(true)
+        return
+      }
     }
 
     dispatch(addOneNewEmployee({ newEmployeeData }))
       .unwrap()
       .finally(() => {
-        setSavingEmployee(false)
-        setEmployeeCreated(true)
+        setIsLoading(false)
+        setIsModalOpened(true)
       })
   }
 
   return (
-    <HomeLayout saveEmployee={saveEmployee} savingEmployee={savingEmployee} employeeCreated={employeeCreated} />
+    <>
+      {isModalOpened && <Modal closeModalButton={closeModal} />}
+      <HomeLayout
+        saveEmployee={saveEmployee}
+        isLoading={isLoading}
+        errorSaving={error}
+      />
+    </>
   )
 }
 

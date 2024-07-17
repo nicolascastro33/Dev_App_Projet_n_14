@@ -9,7 +9,7 @@ import { createStore } from './lib/create-store.ts'
 const employeeGateway = new FakeEmployeeGateway()
 employeeGateway.allEmployees = [
   {
-    id: 1,
+    id: '1',
     firstName: 'Johh',
     lastName: 'Doe',
     dateOfBirth: '22/22/22',

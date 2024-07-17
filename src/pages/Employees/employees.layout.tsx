@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../../lib/create-store'
 import { selectEmployeesViewModel, ViewModelType } from './employees-viewmodal'
 import { ReactNode } from 'react'
+import DataTables from '../../components/DataTables'
 
 function EmployeesLayout() {
   const viewModel = useSelector<
@@ -16,7 +17,7 @@ function EmployeesLayout() {
       case ViewModelType.NoEmployees:
         return <div>No employees</div>
       case ViewModelType.WithEmployees:
-        return <div>With Employees</div>
+        return <DataTables data={viewModel.info.employees} />
     }
   })()
 

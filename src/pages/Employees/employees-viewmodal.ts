@@ -19,7 +19,7 @@ export type ViewModel = {
     | {
         type: ViewModelType.WithEmployees
         employees: {
-          id: number
+          id: string
           firstName: string
           lastName: string
           dateOfBirth: string
@@ -41,7 +41,7 @@ export const selectEmployeesViewModel = (rootState: RootState): ViewModel => {
     return { info: { type: ViewModelType.LoadingEmployees } }
   }
 
-  if (employees) {
+  if (employees.length >= 1) {
     return { info: { type: ViewModelType.WithEmployees, employees } }
   }
 

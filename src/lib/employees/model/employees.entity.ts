@@ -1,7 +1,7 @@
 import { createEntityAdapter } from '@reduxjs/toolkit'
 
 export type Employee = {
-  id: number
+  id: string
   firstName: string
   lastName: string
   dateOfBirth: string

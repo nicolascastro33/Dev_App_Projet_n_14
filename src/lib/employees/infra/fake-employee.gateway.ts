@@ -7,7 +7,7 @@ import {
 
 export class FakeEmployeeGateway implements EmployeeGateway {
   constructor(private readonly delay = 0) {}
-  allEmployees: undefined | EmployeesInfo[] = undefined
+  allEmployees: EmployeesInfo[] = []
   async getEmployees(): Promise<GetInfoEmployeesResponse> {
     return new Promise((resolve, reject) =>
       setTimeout(() => {
@@ -26,12 +26,18 @@ export class FakeEmployeeGateway implements EmployeeGateway {
   }): Promise<GetNewEmployeesResponse> {
     return new Promise((resolve, reject) =>
       setTimeout(() => {
-        const newEmployee = {...info, id:info.firstName + "-" + Math.floor((Math.random() * 100) + 1).toString()}
+        const newEmployee = {
+          ...info,
+          id:
+            info.firstName +
+            '-' +
+            Math.floor(Math.random() * 1000 + 1).toString(),
+        }
         if (!newEmployee) {
           return reject()
         }
         this.allEmployees?.push(newEmployee)
-        return resolve({newEmployee})
+        return resolve({ newEmployee })
       }, this.delay)
     )
   }

@@ -17,7 +17,7 @@ export const createStore = (
 ) => {
   const actions: AnyAction[] = []
   const logActionsMiddleware: Middleware = () => (next) => (action) => {
-    action.push(action)
+    actions.push(action)
     return next(action)
   }
   const store = configureStore({
@@ -29,6 +29,7 @@ export const createStore = (
     },
     preloadedState,
   })
+
   return {
     ...store,
     getActions() {

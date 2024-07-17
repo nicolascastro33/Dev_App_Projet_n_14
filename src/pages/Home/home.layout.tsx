@@ -1,63 +1,78 @@
-import { Link } from 'react-router-dom'
+import { states } from '../../data/states-option'
 
 function HomeLayout({
   saveEmployee,
-  savingEmployee,
-  employeeCreated,
+  isLoading,
+  errorSaving,
 }: {
   saveEmployee(e: any): void
-  savingEmployee: boolean
-  employeeCreated: boolean
+  isLoading: boolean
+  errorSaving: boolean
 }) {
   return (
     <main>
-      {savingEmployee && <div>Loading...</div>}
-      <div className="title">
-        <h1>HRnet</h1>
-      </div>
+      {isLoading && <div>Loading...</div>}
       <div className="container">
-        <Link to="/employees">View Current Employees</Link>
         <h2>Create Employee</h2>
-        <form action="#" id="create-employee">
+        <form
+          action="#"
+          id="create-employee"
+          className="createEmployee"
+          onSubmit={saveEmployee}
+        >
           <label htmlFor="firstName">First Name</label>
-          <input type="text" id="firstName" />
+          <input type="text" id="firstName" required />
           <label htmlFor="lastName">Last Name</label>
-          <input type="text" id="lastName" />
+          <input type="text" id="lastName" required />
 
           <label htmlFor="dateOfBirth">Date of Birth</label>
-          <input id="dateOfBirth" type="text" />
+          <input id="dateOfBirth" type="text" required />
 
           <label htmlFor="startDate">Start Date</label>
-          <input id="startDate" type="text" />
-          <fieldset className="adress">
-            <legend>Adress</legend>
+          <input id="startDate" type="text" required />
+          <fieldset className="address">
+            <legend>Address</legend>
             <label htmlFor="street">Street</label>
-            <input id="street" type="text" />
+            <input id="street" type="text" required />
 
             <label htmlFor="city">City</label>
-            <input id="city" type="text" />
+            <input id="city" type="text" required />
 
             <label htmlFor="state">State</label>
-            <select name="state" id="state"></select>
+            <select name="state" id="state" className="state" required>
+              {states.map((state, index) => (
+                <option
+                  key={`${state.abbreviation}-${index}`}
+                  value={state.abbreviation}
+                >
+                  {state.name}
+                </option>
+              ))}
+            </select>
 
             <label htmlFor="zipCode">Zip Code</label>
-            <input id="zipCode" type="number" />
+            <input id="zipCode" type="number" required />
           </fieldset>
           <label htmlFor="department">Department</label>
-          <select name="department" id="department">
+          <select
+            name="department"
+            id="department"
+            className="department"
+            required
+          >
             <option>Sales</option>
             <option>Marketing</option>
             <option>Engineering</option>
             <option>Human Resources</option>
             <option>Legal</option>
           </select>
-          <button onSubmit={saveEmployee}>Save</button>
+          <div className="buttonWrapper">
+            <button className="saveEmployeeButton">Save</button>
+          </div>
         </form>
       </div>
-      {employeeCreated && (
-        <div id="confirmation" className="modal">
-          Employee Created!
-        </div>
+      {errorSaving && (
+        <div className="errorSaving">There is a missing field</div>
       )}
     </main>
   )
