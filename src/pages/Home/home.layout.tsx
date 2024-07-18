@@ -1,4 +1,6 @@
-import { states } from '../../data/states-option'
+import SelectMenu from '../../components/SelectMenu'
+import { departments } from '../../data/department-options'
+import { states } from '../../data/states-options'
 
 function HomeLayout({
   saveEmployee,
@@ -39,33 +41,12 @@ function HomeLayout({
             <input id="city" type="text" required />
 
             <label htmlFor="state">State</label>
-            <select name="state" id="state" className="state" required>
-              {states.map((state, index) => (
-                <option
-                  key={`${state.abbreviation}-${index}`}
-                  value={state.abbreviation}
-                >
-                  {state.name}
-                </option>
-              ))}
-            </select>
-
+            <SelectMenu type="state" options={states} />
             <label htmlFor="zipCode">Zip Code</label>
             <input id="zipCode" type="number" required />
           </fieldset>
           <label htmlFor="department">Department</label>
-          <select
-            name="department"
-            id="department"
-            className="department"
-            required
-          >
-            <option>Sales</option>
-            <option>Marketing</option>
-            <option>Engineering</option>
-            <option>Human Resources</option>
-            <option>Legal</option>
-          </select>
+          <SelectMenu type="department" options={departments} />
           <div className="buttonWrapper">
             <button className="saveEmployeeButton">Save</button>
           </div>

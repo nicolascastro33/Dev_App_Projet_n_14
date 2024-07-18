@@ -14,7 +14,7 @@ employeeGateway.allEmployees = [
     lastName: 'Doe',
     dateOfBirth: '22/22/22',
     city: 'Anytown',
-    street: '',
+    street: 'whereabout',
     state: 'CA',
     zipCode: '12345',
     department: 'Sales',

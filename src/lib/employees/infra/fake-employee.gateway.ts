@@ -2,7 +2,6 @@ import {
   EmployeeGateway,
   EmployeesInfo,
   GetInfoEmployeesResponse,
-  GetNewEmployeesResponse,
 } from '../model/employee.gateway'
 
 export class FakeEmployeeGateway implements EmployeeGateway {
@@ -19,27 +18,8 @@ export class FakeEmployeeGateway implements EmployeeGateway {
       }, this.delay)
     )
   }
-  async addNewEmployee({
-    info,
-  }: {
-    info: EmployeesInfo
-  }): Promise<GetNewEmployeesResponse> {
-    return new Promise((resolve, reject) =>
-      setTimeout(() => {
-        const newEmployee = {
-          ...info,
-          id:
-            info.firstName +
-            '-' +
-            Math.floor(Math.random() * 1000 + 1).toString(),
-        }
-        if (!newEmployee) {
-          return reject()
-        }
-        this.allEmployees?.push(newEmployee)
-        return resolve({ newEmployee })
-      }, this.delay)
-    )
+  async addNewEmployee({ info }: { info: EmployeesInfo }): Promise<void> {
+    await this.allEmployees?.push(info)
   }
 }
 

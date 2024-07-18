@@ -15,15 +15,7 @@ export type GetInfoEmployeesResponse = {
   employeesInfo: EmployeesInfo[]
 }
 
-export type GetNewEmployeesResponse = {
-  newEmployee: EmployeesInfo
-}
-
 export interface EmployeeGateway {
   getEmployees(): Promise<GetInfoEmployeesResponse>
-  addNewEmployee({
-    info,
-  }: {
-    info: Omit<EmployeesInfo, 'id'>
-  }): Promise<GetNewEmployeesResponse>
+  addNewEmployee({ info }: { info: EmployeesInfo }):Promise<void>
 }

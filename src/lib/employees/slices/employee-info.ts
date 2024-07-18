@@ -33,18 +33,7 @@ export const employeeSlice = createSlice({
       })
       .addCase(addOneNewEmployee.fulfilled, (state, action) => {
         const newEmployee = action.payload
-        employeeAdapter.addOne(state, {
-          id: newEmployee.id,
-          firstName: newEmployee.firstName,
-          lastName: newEmployee.lastName,
-          dateOfBirth: newEmployee.dateOfBirth,
-          startDate: newEmployee.startDate,
-          department: newEmployee.department,
-          street: newEmployee.street,
-          city: newEmployee.city,
-          state: newEmployee.state,
-          zipCode: newEmployee.zipCode,
-        })
+        employeeAdapter.addOne(state, newEmployee)
       })
   },
 })
