@@ -11,15 +11,15 @@ function EmployeesLayout() {
   >((rootState) => selectEmployeesViewModel(rootState))
 
   const columns = [
-    'First Name',
-    'Last Name',
-    'Start Date',
-    'Department',
-    'Date of Birth',
-    'Street',
-    'City',
-    'State',
-    'Zip Code',
+    {title:'First Name', field: 'firstName'},
+    {title:'Last Name', field: 'lastName'},
+    {title:'Start Date', field: 'startDate'},
+    {title:'Department', field: 'department'},
+    {title:'Date of Birth', field: 'dateOfBirth'},
+    {title:'Street', field: 'street'},
+    {title:'City', field: 'city'},
+    {title:'State', field: 'state'},
+    {title: 'Zip Code', field: 'zipCode'}
   ]
 
   const employeeNode: ReactNode = (() => {
@@ -29,7 +29,7 @@ function EmployeesLayout() {
       case ViewModelType.NoEmployees:
         return <div>No employees</div>
       case ViewModelType.WithEmployees:
-        return <DataTables data={viewModel.info.employees} columns={columns} />
+        return <DataTables employees={viewModel.info.employees} columns={columns} />
     }
   })()
 

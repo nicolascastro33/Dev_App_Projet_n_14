@@ -224,3 +224,16 @@ header {
     border: 1px solid black;
   }
 }
+
+.tableHeader{
+  display: flex;
+}
+
+.oneTableHeader{
+  display: flex;
+}
+
+.buttonFilter{
+  width: 20px;
+  height: 20px;
+}
