@@ -1,38 +1,38 @@
 import { useEffect, useState } from 'react'
-import { EmployeesInfo } from '../lib/employees/model/employee.gateway'
 import arrow from '../assets/arrow.png'
 
-function DataTables({
-  employees,
+function DataTables<Data extends object>({
+  arrayData,
   columns,
 }: {
-  employees: EmployeesInfo[]
+  arrayData: Data[]
   columns: { title: string; field: string }[]
 }) {
   const entries = [10, 25, 50, 100]
 
-  const [data, setData] = useState(employees)
-  const [rowsPerPage, setRowsPerPage] = useState(entries[0])
-  const [currentPage, setCurrentPage] = useState(1)
+  const [data, setData] = useState<Data[]>(arrayData ? arrayData : [])
 
-  const [sortColumn, setSortColumn] = useState('')
-  const [sortOrder, setSortOrder] = useState('asc')
+  const [rowsPerPage, setRowsPerPage] = useState<number>(entries[0])
+  const [currentPage, setCurrentPage] = useState<number>(1)
+
+  const [sortColumn, setSortColumn] = useState<string>('')
+  const [sortOrder, setSortOrder] = useState<string>('asc')
 
   //#### Error sorting ####
   //Sorting
   useEffect(() => {
     if (sortColumn !== '') {
-      // console.log(sortColumn + ' ' + sortOrder)
-      let sortedData = data.sort((firstRow, otherRow) => {
-        return (firstRow as any)[sortColumn]
-          .toString()
-          .localeCompare((otherRow as any)[sortColumn].toString())
-      })
+      let sortedData = Array.from(
+        data.sort((firstRow, otherRow) => {
+          return (firstRow as any)[sortColumn]
+            .toString()
+            .localeCompare((otherRow as any)[sortColumn].toString())
+        })
+      )
       if (sortOrder === 'desc') {
         sortedData.reverse()
       }
       setData(sortedData)
-      console.log(data)
     }
   }, [sortColumn, sortOrder])
 
@@ -78,14 +78,14 @@ function DataTables({
   const filteredData = (e: any) => {
     const searchValue = e.target.value.trim().toLowerCase()
     if (!searchValue) {
-      setData(employees)
+      setData(arrayData)
       return
     }
 
-    const filteredData = [] as EmployeesInfo[]
-    employees.forEach((employee) => {
+    const filteredData = [] as Data[]
+    arrayData.forEach((employee) => {
       let isInclude = false
-      for (const [key, value] of Object.entries(employee)) {
+      for (const [_, value] of Object.entries(employee)) {
         if (value.toLowerCase().includes(searchValue)) isInclude = true
       }
       if (isInclude) filteredData.push(employee)
@@ -94,8 +94,8 @@ function DataTables({
   }
 
   return (
-    <>
-      <div>
+    <div className="dataTables">
+      <div className="dataTablesHeader">
         <form className="entriesForm" action="/">
           <label htmlFor="entries">Show </label>
           <select onInput={changeRowsPerPage} name="entries" id="entries">
@@ -107,12 +107,12 @@ function DataTables({
           </select>
           <label htmlFor="entries">entries </label>
         </form>
-        <div>
+        <div className="searchTable">
           <h2>Search :</h2>
-          <input type="text" onInput={filteredData} />
+          <input type="search" onInput={filteredData} />
         </div>
       </div>
-      <table>
+      <table className="table">
         <thead>
           <tr>
             {columns.map((column, index) => (
@@ -135,8 +135,8 @@ function DataTables({
               <td>No data available</td>
             </tr>
           ) : (
-            data.slice(startPoint, endPoint).map((employee, index) => (
-              <tr key={`employee-${employee.firstName}-${index}`}>
+            data?.slice(startPoint, endPoint).map((employee, index) => (
+              <tr key={`employee-${index}`}>
                 {columns.map((column) => (
                   <td key={`column-${column.field}-${index}`}>
                     {(employee as any)[column.field]}
@@ -147,22 +147,25 @@ function DataTables({
           )}
         </tbody>
       </table>{' '}
-      <div className="numberEntries">
-        Showing {currentPage} to{' '}
-        {data.length < rowsPerPage ? data.length : rowsPerPage} of {data.length}
+      <div className="dataTablesFooter">
+        <div className="numberEntries">
+          Showing {currentPage} to{' '}
+          {data.length < rowsPerPage ? data.length : rowsPerPage} of{' '}
+          {data.length}
+        </div>
+        <div className="pagination">
+          <button className="previous" onClick={changePage}>
+            Previous
+          </button>
+          <span>
+            <p>{currentPage}</p>
+          </span>
+          <button className="next" onClick={changePage}>
+            Next
+          </button>
+        </div>
       </div>
-      <div className="pagination">
-        <button className="previous" onClick={changePage}>
-          Previous
-        </button>
-        <span>
-          <p>{currentPage}</p>
-        </span>
-        <button className="next" onClick={changePage}>
-          Next
-        </button>
-      </div>
-    </>
+    </div>
   )
 }
 

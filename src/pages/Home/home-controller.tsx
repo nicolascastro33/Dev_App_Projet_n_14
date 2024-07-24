@@ -12,12 +12,6 @@ function HomeController() {
   const [isModalOpened, setIsModalOpened] = useState<boolean>(false)
   const dispatch = useDispatch<AppDispatch>()
 
-
-  const closeModal = () => {
-    document.body.style.overflow = 'unset'
-    setIsModalOpened(false)
-  }
-
   const saveEmployee = (e: any): void => {
     e.preventDefault()
     setIsLoading(true)
@@ -34,7 +28,7 @@ function HomeController() {
       state: e.target.state.value,
       zipCode: e.target.zipCode.value,
     }
-    for (const [key, value] of Object.entries(newEmployeeData)) {
+    for (const [_, value] of Object.entries(newEmployeeData)) {
       if (!value || value.trim().length === 0) {
         setError(true)
         return
@@ -51,7 +45,12 @@ function HomeController() {
 
   return (
     <>
-      {isModalOpened && <Modal closeModalButton={closeModal} />}
+      {isModalOpened && (
+        <Modal
+          setIsModalOpened={setIsModalOpened}
+          message="Employee Created!"
+        />
+      )}
       <HomeLayout
         saveEmployee={saveEmployee}
         isLoading={isLoading}

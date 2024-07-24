@@ -225,15 +225,114 @@ header {
   }
 }
 
-.tableHeader{
+.tableHeader {
   display: flex;
 }
 
-.oneTableHeader{
+.oneTableHeader {
   display: flex;
 }
 
-.buttonFilter{
+.buttonFilter {
   width: 20px;
   height: 20px;
+}
+
+.dataTablesHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px 0 10px;
+}
+
+.entriesForm {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  & select {
+    border: 1px solid black;
+    height: 30px;
+  }
+}
+
+.searchTable {
+  display: flex;
+  gap: 10px;
+}
+
+.dataTables {
+  font-size: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  padding: 0 10px 0 10px;
+}
+
+.table {
+  & thead {
+    padding: 10px;
+    & button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      &:hover{
+        cursor: pointer;
+        border: 1px solid white;
+      }
+    }
+  }
+  & tbody {
+    border: 1px solid black;
+    & tr {
+      border: 1px solid rgb(240, 237, 237);
+    }
+  }
+}
+
+.dataTablesFooter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  & button {
+    cursor: pointer;
+    padding: 2px;
+    color: rgb(167, 161, 161);
+    &:hover {
+      border: 1px solid black;
+    }
+  }
+  & span {
+    border: 1px solid black;
+    width: 45px;
+    height: 40px;
+    border-radius: 5px;
+    border: 1px solid rgb(167, 161, 161);
+    background-color: rgb(240, 237, 237);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  & a {
+    text-decoration: none;
+    color: black;
+    cursor: pointer;
+    &:hover {
+      text-decoration: underline;
+      color: black;
+    }
+  }
 }
