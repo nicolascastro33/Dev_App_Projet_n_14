@@ -1,6 +1,8 @@
+import { useState } from 'react'
 import SelectMenu from '../../components/SelectMenu'
 import { departments } from '../../data/department-options'
 import { states } from '../../data/states-options'
+import DatePicker from 'react-datepicker'
 
 function HomeLayout({
   saveEmployee,
@@ -11,6 +13,7 @@ function HomeLayout({
   isLoading: boolean
   errorSaving: boolean
 }) {
+  const [selectedDate, setSelectedDate] = useState<null | Date>(null)
   return (
     <main>
       {isLoading && <div>Loading...</div>}
@@ -28,10 +31,16 @@ function HomeLayout({
           <input type="text" id="lastName" required />
 
           <label htmlFor="dateOfBirth">Date of Birth</label>
-          <input id="dateOfBirth" type="text" required />
+          <DatePicker
+            selected={selectedDate}
+            onChange={(date) => setSelectedDate(date)}
+            dateFormat="yyyy/MM/dd"
+            filterDate={(date) => date.getDay() !== 6 && date.getDay() !== 0}
+            isClearable
+          />
 
-          <label htmlFor="startDate">Start Date</label>
-          <input id="startDate" type="text" required />
+          <label htmlFor="selectedDate">Start Date</label>
+          <input id="selectedDate" type="text" required />
           <fieldset className="address">
             <legend>Address</legend>
             <label htmlFor="street">Street</label>

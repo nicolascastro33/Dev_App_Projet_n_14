@@ -1,21 +1,21 @@
 import { useEffect, useState } from 'react'
-import arrow from '../assets/arrow.png'
 
 function DataTables<Data extends object>({
   arrayData,
   columns,
+  entries
 }: {
   arrayData: Data[]
   columns: { title: string; field: string }[]
+  entries: number[]
 }) {
-  const entries = [10, 25, 50, 100]
 
   const [data, setData] = useState<Data[]>(arrayData ? arrayData : [])
 
   const [rowsPerPage, setRowsPerPage] = useState<number>(entries[0])
   const [currentPage, setCurrentPage] = useState<number>(1)
 
-  const [sortColumn, setSortColumn] = useState<string>('')
+  const [sortColumn, setSortColumn] = useState<string>(columns[0].field)
   const [sortOrder, setSortOrder] = useState<string>('asc')
 
   //#### Error sorting ####
@@ -48,12 +48,14 @@ function DataTables<Data extends object>({
       setSortOrder('asc')
     }
   }
-  //#### Error sorting ####
-
+  
   // Entries
   const changeRowsPerPage = (e: any) => {
     e.preventDefault
-    if (e.target.value) setRowsPerPage(e.target.value)
+    if (e.target.value) {
+      setRowsPerPage(e.target.value)
+      setCurrentPage(1)
+    }
     return
   }
 
@@ -64,11 +66,11 @@ function DataTables<Data extends object>({
 
   const changePage = (e: any) => {
     e.preventDefault()
-    if (e.target.className === 'previous' && currentPage > 1) {
+    if (e.target.id === 'previous' && currentPage > 1) {
       setCurrentPage(currentPage - 1)
       return
     }
-    if (e.target.className === 'next' && currentPage < totalPages) {
+    if (e.target.id === 'next' && currentPage < totalPages) {
       setCurrentPage(currentPage + 1)
       return
     }
@@ -116,29 +118,48 @@ function DataTables<Data extends object>({
         <thead>
           <tr>
             {columns.map((column, index) => (
-              <th key={`columns-${column}-${index}`}>
-                <button onClick={() => handleSort(column.field)}>
+              <th
+                onClick={() => handleSort(column.field)}
+                key={`columns-${column}-${index}`}
+              >
+                <div className="button-filter">
                   <h2>{column.title}</h2>
-                  <img
-                    src={arrow}
-                    alt="button-filter"
-                    className="buttonFilter"
-                  />
-                </button>
+                  <div className="all-triangles-filter">
+                    <span
+                      className={
+                        sortColumn === column.field && sortOrder === 'asc'
+                          ? 'triangle-filter-active'
+                          : 'triangle-filter'
+                      }
+                    />
+                    <span
+                      className={
+                        sortColumn === column.field && sortOrder === 'desc'
+                          ? 'triangle-filter-active'
+                          : 'triangle-filter'
+                      }
+                    />
+                  </div>
+                </div>
               </th>
             ))}
           </tr>
         </thead>
         <tbody>
           {data.length === 0 ? (
-            <tr>
-              <td>No data available</td>
+            <tr className="no-matching">
+              <td>No matching records found</td>
             </tr>
           ) : (
             data?.slice(startPoint, endPoint).map((employee, index) => (
-              <tr key={`employee-${index}`}>
+              <tr className='tr-data' key={`employee-${index}`}>
                 {columns.map((column) => (
-                  <td key={`column-${column.field}-${index}`}>
+                  <td
+                    className={
+                      sortColumn === column.field ? 'td-active' : 'td-inactive'
+                    }
+                    key={`column-${column.field}-${index}`}
+                  >
                     {(employee as any)[column.field]}
                   </td>
                 ))}
@@ -151,16 +172,30 @@ function DataTables<Data extends object>({
         <div className="numberEntries">
           Showing {currentPage} to{' '}
           {data.length < rowsPerPage ? data.length : rowsPerPage} of{' '}
-          {data.length}
+          {data.length} entries
         </div>
         <div className="pagination">
-          <button className="previous" onClick={changePage}>
+          <button
+            id="previous"
+            className={
+              currentPage > 1 ? 'pagination-active' : 'pagination-inactive'
+            }
+            onClick={changePage}
+          >
             Previous
           </button>
           <span>
             <p>{currentPage}</p>
           </span>
-          <button className="next" onClick={changePage}>
+          <button
+            id="next"
+            className={
+              currentPage < totalPages
+                ? 'pagination-active'
+                : 'pagination-inactive'
+            }
+            onClick={changePage}
+          >
             Next
           </button>
         </div>

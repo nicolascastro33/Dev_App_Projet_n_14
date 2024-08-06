@@ -35,6 +35,7 @@ function SelectMenu({ options, type }: { options: TSelectMenu; type: string }) {
 
         <img
           src={arrow}
+          alt='arrowToActiveMenu'
           className={`menuArrow ${
             activeMenu ? 'activeMenuArrow' : 'notActiveMenuArrow'
           }`}

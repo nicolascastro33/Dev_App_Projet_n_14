@@ -62,6 +62,7 @@ button:focus-visible {
   margin-top: 1rem;
   display: flex;
   flex-direction: column;
+  width: 35%;
 }
 
 .title {
@@ -216,81 +217,127 @@ header {
   transform: rotate(180deg);
 }
 
+.activeMenuOptions {
+  overflow-x: hidden;
+  overflow: scroll;
+  max-height: 250px;
+}
+
 .option {
   list-style-type: none;
   cursor: pointer;
   padding: 5px 10px;
+  text-overflow: hidden;
+  border: 1px solid rgb(240, 237, 237);
   &:hover {
     border: 1px solid black;
   }
 }
 
-.tableHeader {
-  display: flex;
+.employee-page-main {
+  margin-top: 2rem;
+  margin: 2rem 10% 0 10%;
 }
-
-.oneTableHeader {
-  display: flex;
-}
-
-.buttonFilter {
-  width: 20px;
-  height: 20px;
-}
-
-.dataTablesHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 10px 0 10px;
-}
-
-.entriesForm {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  & select {
-    border: 1px solid black;
-    height: 30px;
-  }
-}
-
-.searchTable {
-  display: flex;
-  gap: 10px;
-}
-
+/* Beginning of the DataTables */
 .dataTables {
   font-size: 0.9rem;
   display: flex;
   flex-direction: column;
   padding: 0 10px 0 10px;
 }
-
-.table {
-  & thead {
-    padding: 10px;
-    & button {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      &:hover{
-        cursor: pointer;
-        border: 1px solid white;
-      }
+/* Setting above the table */
+.dataTablesHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+  & .entriesForm {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    & select {
+      border: 1px solid black;
+      height: 25px;
     }
   }
-  & tbody {
-    border: 1px solid black;
-    & tr {
-      border: 1px solid rgb(240, 237, 237);
+  & .searchTable {
+    display: flex;
+    gap: 10px;
+  }
+}
+
+/* Table Header */
+th {
+  padding: 10px;
+  & .button-filter {
+    display: flex;
+    gap: 10px;
+  }
+}
+
+.all-triangles-filter {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  & .triangle-filter-active {
+    border-color: transparent transparent purple transparent;
+  }
+  & span {
+    width: 0px;
+    height: 0px;
+    border-style: solid;
+    border-width: 0 5px 6px 5px;
+    border-color: transparent transparent grey transparent;
+    &:last-child {
+      transform: rotate(180deg);
     }
   }
 }
 
+/* Table Body */
+
+tbody {
+  & .tr-data:first-child {
+    border-top: 1px solid black;
+  }
+  & .tr-data:last-child {
+    border-bottom: 1px solid black;
+  }
+}
+
+.tr-data:nth-child(even) {
+  background-color: #ccc;
+  &:hover {
+    .td-active {
+      background-color: grey;
+    }
+  }
+  & .td-active {
+    background-color: rgb(158, 154, 154);
+  }
+}
+.tr-data:nth-child(odd) {
+  background-color: #fff;
+  &:hover {
+    background-color: #ccc;
+    & .td-active {
+      background-color: grey;
+    }
+  }
+  & .td-active {
+    background-color: #ccc;
+  }
+}
+
+td {
+  padding: 10px;
+}
+
+/* Setting below the table */
 .dataTablesFooter {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
   gap: 10px;
   margin-top: 20px;
@@ -302,17 +349,24 @@ header {
   justify-content: center;
   gap: 10px;
   & button {
-    cursor: pointer;
     padding: 2px;
-    color: rgb(167, 161, 161);
+    border: 1px solid white;
+  }
+  & .pagination-active {
+    cursor: pointer;
+    color: black;
     &:hover {
-      border: 1px solid black;
+      text-decoration: underline;
     }
+  }
+  & .pagination-inactive {
+    cursor: not-allowed;
+    color: gray;
   }
   & span {
     border: 1px solid black;
-    width: 45px;
-    height: 40px;
+    width: 35px;
+    height: 30px;
     border-radius: 5px;
     border: 1px solid rgb(167, 161, 161);
     background-color: rgb(240, 237, 237);
@@ -321,6 +375,8 @@ header {
     justify-content: center;
   }
 }
+
+/* End of the DataTables */
 
 footer {
   display: flex;

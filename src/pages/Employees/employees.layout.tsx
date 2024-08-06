@@ -21,6 +21,7 @@ function EmployeesLayout() {
     { title: 'State', field: 'state' },
     { title: 'Zip Code', field: 'zipCode' },
   ]
+  const entries = [10, 25, 50, 100]
 
   const employeeNode: ReactNode = (() => {
     switch (viewModel.info.type) {
@@ -30,7 +31,11 @@ function EmployeesLayout() {
         return <div>No employees</div>
       case ViewModelType.WithEmployees:
         return (
-          <DataTables arrayData={viewModel.info.employees} columns={columns} />
+          <DataTables
+            arrayData={viewModel.info.employees}
+            columns={columns}
+            entries={entries}
+          />
         )
     }
   })()

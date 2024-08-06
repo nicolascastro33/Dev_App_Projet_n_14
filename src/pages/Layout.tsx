@@ -23,6 +23,7 @@ function LayoutComponent() {
       <Outlet />
       <footer>
         <Link to="/">Home</Link>
+        
       </footer>
     </>
   )
