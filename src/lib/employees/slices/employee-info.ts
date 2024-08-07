@@ -33,6 +33,7 @@ export const employeeSlice = createSlice({
       })
       .addCase(addOneNewEmployee.fulfilled, (state, action) => {
         const newEmployee = action.payload
+        console.log(newEmployee)
         employeeAdapter.addOne(state, newEmployee)
       })
   },

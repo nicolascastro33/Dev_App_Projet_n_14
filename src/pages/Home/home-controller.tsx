@@ -1,10 +1,12 @@
 import { useState } from 'react'
+import { v4 as uuid } from 'uuid'
+
 import HomeLayout from './home.layout'
 import { useDispatch } from 'react-redux'
 import { addOneNewEmployee } from '../../lib/employees/usecases/add-one-new-employee'
 import Modal from '../../components/Modal'
 import { AppDispatch } from '../../lib/create-store'
-import { v4 as uuid } from 'uuid'
+import { EmployeesInfo } from '../../lib/employees/model/employee.gateway'
 
 function HomeController() {
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -15,27 +17,24 @@ function HomeController() {
   const saveEmployee = (e: any): void => {
     e.preventDefault()
     setIsLoading(true)
-    const unique_id = uuid().slice(0, 8)
-    const newEmployeeData = {
-      id: unique_id,
-      firstName: e.target.firstName.value,
-      lastName: e.target.lastName.value,
-      dateOfBirth: e.target.dateOfBirth.value,
-      startDate: e.target.startDate.value,
-      department: e.target.department.value,
-      city: e.target.city.value,
-      street: e.target.street.value,
-      state: e.target.state.value,
-      zipCode: e.target.zipCode.value,
-    }
-    for (const [_, value] of Object.entries(newEmployeeData)) {
-      if (!value || value.trim().length === 0) {
+
+    const employeeFormData = new FormData(e.target)
+
+    employeeFormData.forEach((value) => {
+      if (!value || value.toString().trim().length === 0) {
         setError(true)
         return
       }
-    }
+    })
 
-    dispatch(addOneNewEmployee({ newEmployeeData }))
+    dispatch(
+      addOneNewEmployee({
+        newEmployeeData: {
+          id: uuid().slice(0, 8),
+          ...Object.fromEntries(employeeFormData.entries()) as Omit<EmployeesInfo, 'id'>,
+        },
+      })
+    )
       .unwrap()
       .finally(() => {
         setIsLoading(false)
