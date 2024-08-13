@@ -1,6 +1,7 @@
 import SelectMenu from '../../components/SelectMenu'
 import { departments } from '../../data/department-options'
 import { states } from '../../data/states-options'
+import { DatePicker } from '../../components/DatePicker'
 
 function HomeLayout({
   saveEmployee,
@@ -48,9 +49,12 @@ function HomeLayout({
           <label htmlFor="department">Department</label>
           <SelectMenu type="department" options={departments} />
           <div className="buttonWrapper">
-            <button className="saveEmployeeButton" type='submit'>Save</button>
+            <button className="saveEmployeeButton" type="submit">
+              Save
+            </button>
           </div>
         </form>
+        <DatePicker />
       </div>
       {errorSaving && (
         <div className="errorSaving">There is a missing field</div>
