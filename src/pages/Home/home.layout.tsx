@@ -54,7 +54,7 @@ function HomeLayout({
             </button>
           </div>
         </form>
-        <DatePicker />
+        <DatePicker minDate={undefined} maxDate={new Date()}/>
       </div>
       {errorSaving && (
         <div className="errorSaving">There is a missing field</div>

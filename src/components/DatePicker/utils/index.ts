@@ -11,6 +11,11 @@ export const getSortedDays = (year: number, month: number) => {
   return [...firstHalf, ...dayNames.slice(0, dayIndex)]
 }
 
+export const getDayWithoutHour = () => {
+  const date = new Date()
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0)
+}
+
 export const range = (start: number, end: number) => {
   const length = Math.abs((end - start) / 1)
   const { result } = Array.from({ length }).reduce(
