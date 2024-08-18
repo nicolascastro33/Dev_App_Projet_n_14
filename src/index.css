@@ -218,9 +218,13 @@ header {
 }
 
 .activeMenuOptions {
-  overflow-x: hidden;
+  overflow-y: hidden;
   overflow: scroll;
   max-height: 250px;
+  &::-webkit-scrollbar {
+    width: 0;
+    background-color: transparent;
+  }
 }
 
 .option {
@@ -379,14 +383,14 @@ td {
 /* End of the DataTables */
 
 /* Begining of the DatePicker */
-.input-date-wrapper{
+.input-date-wrapper {
   position: relative;
   width: 500px;
-  & input{
+  & input {
     width: 100%;
     border-radius: 8px;
   }
-  & button{
+  & button {
     position: absolute;
     right: 10px;
     border: none;
@@ -394,27 +398,105 @@ td {
   }
 }
 
-
 .picker-wrapper {
   border: 1px solid black;
   border-radius: 7px;
   width: 500px;
+  padding: 10px;
+  position: relative;
   & button {
     border: none;
     outline: none;
   }
 }
+/* Select Month Picker */
+.select-month-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 50px 10px 10px 10px;
+  background-color: rgb(255, 255, 255, 0.5);
+  width: 100%;
+  height: 100%;
+}
+
+.select-month {
+  overflow: scroll;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  gap: 5px;
+  width: 100%;
+  height: 100%;
+  &::-webkit-scrollbar {
+    width: 0;
+    background-color: transparent;
+  }
+}
+
+.select-year-header {
+  background-color: rgb(240, 237, 237);
+  padding: 5px;
+  cursor: pointer;
+  margin-bottom: 5px;
+}
+
+.select-month-list {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+  & button {
+    display: flex;
+    padding: 3px;
+    border: 1px solid white;
+    font-weight: 400;
+    &:hover {
+      border: 1px solid black;
+      background-color: rgb(240, 237, 237);
+    }
+    &:disabled {
+      text-decoration: line-through;
+      color: gray;
+      cursor: unset;
+      &:hover {
+        border: 1px solid white;
+        background-color: unset;
+      }
+    }
+  }
+}
+
+.select-month-list-close {
+  display: none;
+}
 
 /* Header */
 .picker-header {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  margin: 0 10px;
-  & p {
-    flex: 1 0 0;
-  }
+  margin-bottom: 20px;
+}
 
+.picker-header-months {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  & p {
+    font-weight: bold;
+  }
+  & img {
+    width: 1rem;
+  }
+}
+
+.picker-header-buttons {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 20px;
+  width: 30%;
   & button {
     cursor: pointer;
     & .chevron-forward-outline {
@@ -424,7 +506,7 @@ td {
       transform: rotate(90deg);
     }
     & img {
-      width: 1.5rem;
+      width: 1.2rem;
     }
   }
 }

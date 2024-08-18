@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { SelectMonth } from './selectMonth'
 import arrow from '../../assets/arrow.png'
 import { monthNames } from './consts'
 import {
@@ -17,7 +18,8 @@ export const DatePicker = ({
   minDate: undefined | Date
   maxDate: undefined | Date
 }) => {
-  const [showDatePicker, setShowDatePicker] = useState(true)
+  const [showDatePicker, setShowDatePicker] = useState<boolean>(true)
+  const [showSelectMonth, setShowSelectMonth] = useState<boolean>(true)
   const [currentMonth, setCurrentMonth] = useState<number>(
     new Date().getMonth()
   )
@@ -62,7 +64,6 @@ export const DatePicker = ({
   }
 
   const setTodayDate = () => {
-    console.log(new Date().getTime())
     setCurrentMonth(new Date().getMonth())
     setCurrentYear(new Date().getFullYear())
     setSelectedDate(getDayWithoutHour())
@@ -74,15 +75,15 @@ export const DatePicker = ({
 
   const correctDateInput = (e: any) => {
     const value = e.target.value
-    const lastValue = value.charAt(value.length - 1)
+    const lastValue = Number(value.charAt(value.length - 1))
 
     if (value.length === 1) {
-      if (Number.isNaN(Number(lastValue)) || Number(lastValue) > 3) {
+      if (Number.isNaN(lastValue) || lastValue > 3) {
         e.target.value = ''
       }
     }
     if (value.length === 2) {
-      if (!Number.isNaN(Number(lastValue)) || Number(value) <= 31) {
+      if (!Number.isNaN(lastValue) || Number(value) <= 31) {
         e.target.value = value + '/'
       }
     }
@@ -99,37 +100,63 @@ export const DatePicker = ({
 
       {showDatePicker && (
         <div className="picker-wrapper">
-          <div className="picker-header">
-            <button
-              onClick={previousMonth}
-              disabled={minDate && minDate?.getTime() > getTimeFromState(1)}
-            >
-              <img
-                src={arrow}
-                alt="chevron-back-outline"
-                className="chevron-back-outline"
-              />
-            </button>
+          {showSelectMonth && (
+            <SelectMonth
+              minDate={minDate}
+              maxDate={maxDate}
+              currentMonth={currentMonth}
+              currentYear={currentYear}
+              setCurrentMonth={setCurrentMonth}
+              setCurrentYear={setCurrentYear}
+              setShowSelectMonth={setShowSelectMonth}
+            />
+          )}
 
-            <p>
-              {monthNames[currentMonth]} {currentYear}
-            </p>
-            <button
-              onClick={nextMonth}
-              disabled={
-                maxDate &&
-                maxDate?.getTime() <
-                  getTimeFromState(
-                    getNumberOfDaysInMonth(currentYear, currentMonth)
-                  )
-              }
-            >
-              <img
-                src={arrow}
-                className="chevron-forward-outline"
-                alt="chevron-forward-outline"
-              />
-            </button>
+          <div className="picker-header">
+            <div className="picker-header-months"  onClick={() => setShowSelectMonth(!showSelectMonth)}>
+              <p>
+                {monthNames[currentMonth]} {currentYear}
+              </p>
+              <button
+                disabled={showSelectMonth}
+              >
+                <img
+                  src={arrow}
+                  alt="choose-month-button"
+                  className="choose-month-button"
+                />
+              </button>
+            </div>
+            {!showSelectMonth && (
+              <div className="picker-header-buttons">
+                <button
+                  onClick={previousMonth}
+                  disabled={minDate && minDate?.getTime() > getTimeFromState(1)}
+                >
+                  <img
+                    src={arrow}
+                    alt="chevron-back-outline"
+                    className="chevron-back-outline"
+                  />
+                </button>
+                <button
+                  onClick={nextMonth}
+                  disabled={
+                    maxDate &&
+                    maxDate?.getTime() <
+                      getTimeFromState(
+                        getNumberOfDaysInMonth(currentYear, currentMonth)
+                      )
+                  }
+                >
+                  <img
+                    src={arrow}
+                    className="chevron-forward-outline"
+                    alt="chevron-forward-outline"
+                  />
+                </button>
+              </div>
+            )}
           </div>
           <div className="picker-body">
             <div className="seven-col-grid seven-col-grid-heading">

@@ -25,5 +25,41 @@ export const range = (start: number, end: number) => {
     }),
     { result: [], current: start }
   )
+
   return result
+}
+
+export const getAllYears = (
+  minYear: number | undefined,
+  maxYear: number | undefined
+) => {
+  const start = minYear ? minYear : new Date().getFullYear() - 50
+  const end = maxYear ? maxYear : new Date().getFullYear() + 50
+  const length = Math.abs((end - start) / 1) + 1
+  const { result } = Array.from({ length }).reduce(
+    ({ result, current }) => ({
+      result: [...result, current],
+      current: current + 1,
+    }),
+    { result: [], current: start }
+  )
+  return result.reverse()
+}
+
+export const isDisabled = (
+  minDate: Date | undefined,
+  maxDate: Date | undefined,
+  year: number,
+  month: number
+) => {
+  const start = minDate
+    ? minDate
+    : new Date(new Date().getFullYear() - 50, 1, 0)
+  const end = maxDate ? maxDate : new Date(new Date().getFullYear() + 50, 30, 1)
+  const date = new Date(year, month, 0)
+
+  if (date.getTime() >= start.getTime() && date.getTime() <= end.getTime()) {
+    return false
+  }
+  return true
 }
