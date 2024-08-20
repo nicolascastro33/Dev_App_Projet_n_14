@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { SelectMonth } from './selectMonth'
 import arrow from '../../assets/arrow.png'
 import { monthNames } from './consts'
@@ -8,8 +8,7 @@ import {
   getSortedDays,
   range,
 } from './utils'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCalendar } from '@fortawesome/free-solid-svg-icons'
+import { InputDate } from './inputDate'
 
 export const DatePicker = ({
   minDate,
@@ -30,8 +29,6 @@ export const DatePicker = ({
   const [selectedDate, setSelectedDate] = useState<undefined | Date>(
     getDayWithoutHour()
   )
-
-  useEffect(() => {}, [])
 
   const nextMonth = () => {
     if (currentMonth < 11) {
@@ -73,30 +70,12 @@ export const DatePicker = ({
     return new Date(currentYear, currentMonth, day).getTime()
   }
 
-  const correctDateInput = (e: any) => {
-    const value = e.target.value
-    const lastValue = Number(value.charAt(value.length - 1))
-
-    if (value.length === 1) {
-      if (Number.isNaN(lastValue) || lastValue > 3) {
-        e.target.value = ''
-      }
-    }
-    if (value.length === 2) {
-      if (!Number.isNaN(lastValue) || Number(value) <= 31) {
-        e.target.value = value + '/'
-      }
-    }
-  }
-
   return (
     <>
-      <div className="input-date-wrapper">
-        <input type="text" onInput={correctDateInput} />
-        <button onClick={() => setShowDatePicker(!showDatePicker)}>
-          <FontAwesomeIcon className="input-date-calendar" icon={faCalendar} />
-        </button>
-      </div>
+      <InputDate
+        setShowDatePicker={setShowDatePicker}
+        showDatePicker={showDatePicker}
+      />
 
       {showDatePicker && (
         <div className="picker-wrapper">
@@ -113,13 +92,14 @@ export const DatePicker = ({
           )}
 
           <div className="picker-header">
-            <div className="picker-header-months"  onClick={() => setShowSelectMonth(!showSelectMonth)}>
+            <div
+              className="picker-header-months"
+              onClick={() => setShowSelectMonth(!showSelectMonth)}
+            >
               <p>
                 {monthNames[currentMonth]} {currentYear}
               </p>
-              <button
-                disabled={showSelectMonth}
-              >
+              <button disabled={showSelectMonth}>
                 <img
                   src={arrow}
                   alt="choose-month-button"

@@ -3,7 +3,7 @@ import { getAllYears, isDisabled } from './utils'
 import { useState } from 'react'
 import { monthNames } from './consts'
 
-type TShowSelectMonth = {
+type TSelectMonth = {
   currentMonth: number
   currentYear: number
   setCurrentMonth: Dispatch<SetStateAction<number>>
@@ -21,12 +21,22 @@ export const SelectMonth = ({
   setShowSelectMonth,
   maxDate,
   minDate,
-}: TShowSelectMonth) => {
+}: TSelectMonth) => {
   const [yearOpen, setYearOpen] = useState<number>(currentYear)
-  const [isOpen, setIsOpen] = useState<boolean>(true)
-
+  const [isOpen, setIsOpen] = useState<boolean>(false)
   const closeSelectMonth = (e: any) => {
     if (!e.target.closest('.select-month')) setShowSelectMonth(false)
+  }
+
+  const clickOnYear = (e: any, year: number) => {
+    if (yearOpen === year) {
+      setIsOpen(!isOpen)
+    } else {
+      setYearOpen(year)
+      setIsOpen(true)
+    }
+    const yearComponent = e.target.closest(`#select-year-${year}`)
+    yearComponent.scrollIntoView({ behavior: 'smooth'})
   }
 
   return (
@@ -34,16 +44,12 @@ export const SelectMonth = ({
       <div className="select-month">
         {getAllYears(minDate?.getFullYear(), maxDate?.getFullYear()).map(
           (year, indexYear) => (
-            <>
+            <div key={`year-${indexYear}-${year}`} id={`select-year-${year}`}>
               <div
                 className="select-year-header"
                 key={`year-${indexYear}-${year}`}
-                onClick={() => {
-                  if (yearOpen === year) {
-                    setIsOpen(!isOpen)
-                  } else {
-                    setYearOpen(year)
-                  }
+                onClick={(e) => {
+                  clickOnYear(e, year)
                 }}
               >
                 <p>{year}</p>
@@ -74,7 +80,7 @@ export const SelectMonth = ({
                   </button>
                 ))}
               </div>
-            </>
+            </div>
           )
         )}
       </div>

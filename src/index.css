@@ -409,6 +409,14 @@ td {
     outline: none;
   }
 }
+
+/* Input */
+
+.input-date:focus {
+  background-color: blue;
+  color: white;
+}
+
 /* Select Month Picker */
 .select-month-wrapper {
   position: absolute;
@@ -421,6 +429,7 @@ td {
 }
 
 .select-month {
+  border: 1px solid black;
   overflow: scroll;
   overflow-x: hidden;
   display: flex;
