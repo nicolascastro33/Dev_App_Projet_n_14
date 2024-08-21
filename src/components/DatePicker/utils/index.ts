@@ -63,3 +63,11 @@ export const isDisabled = (
   }
   return true
 }
+
+export const numberOfZeroYearData = (yearData: number) => {
+  let array = []
+  for (let i = 0; i < 4 - yearData.toString().length; i++) {
+    array.push(0)
+  }
+  return array
+}

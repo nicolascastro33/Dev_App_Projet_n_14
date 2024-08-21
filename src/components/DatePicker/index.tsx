@@ -75,6 +75,8 @@ export const DatePicker = ({
       <InputDate
         setShowDatePicker={setShowDatePicker}
         showDatePicker={showDatePicker}
+        maxYearDate={maxDate?.getFullYear()}
+        minYearDate={minDate?.getFullYear()}
       />
 
       {showDatePicker && (
