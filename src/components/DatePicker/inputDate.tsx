@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCalendar } from '@fortawesome/free-solid-svg-icons'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useState } from 'react'
 import { numberOfZeroYearData } from './utils'
 
 type TDate = {
@@ -23,19 +23,17 @@ type TSelectedDate = {
   year: number | undefined
 }
 
-type TInputDate = {
-  setShowDatePicker: Dispatch<SetStateAction<boolean>>
-  showDatePicker: boolean
+type TInputDateProps = {
+  openOrCloseDatePicker: any
   maxYearDate: number | undefined
   minYearDate: number | undefined
 }
 
 export const InputDate = ({
-  setShowDatePicker,
-  showDatePicker,
+  openOrCloseDatePicker,
   maxYearDate,
   minYearDate,
-}: TInputDate) => {
+}: TInputDateProps) => {
   const date: TDate = {
     day: {
       name: 'jj',
@@ -79,6 +77,7 @@ export const InputDate = ({
 
     if (Number.isNaN(Number(keyPress)) && keyPress.length === 1) return
 
+    // if the user want to change the focus of the date
     if (keyPress === 'ArrowRight' && e.target.nextElementSibling) {
       e.target.nextElementSibling.focus()
       return
@@ -113,6 +112,9 @@ export const InputDate = ({
           ...selectedDate,
           [dataType]: Number(keyPress),
         })
+        if (Number(keyPress) * 10 > maxValue && e.target.nextElementSibling) {
+          e.target.nextElementSibling.focus()
+        }
       }
     }
     // if data has been set before
@@ -136,23 +138,20 @@ export const InputDate = ({
           ...selectedDate,
           [dataType]: undefined,
         })
+        return
       }
       if (!Number.isNaN(Number(keyPress))) {
         const result = dataValue * 10 + Number(keyPress)
+        const value = result <= maxValue ? result : Number(keyPress)
         if (result > maxValue && Number(keyPress) === 0) return
         setSelectedDate({
           ...selectedDate,
-          [dataType]: result <= maxValue ? result : Number(keyPress),
+          [dataType]: value,
         })
+        if (value * 10 > maxValue && e.target.nextElementSibling) {
+          e.target.nextElementSibling.focus()
+        }
       }
-    }
-
-    if (
-      Number(selectedDate[dataType as keyof typeof selectedDate]) * 10 >
-        maxValue &&
-      e.target.nextElementSibling
-    ) {
-      e.target.nextElementSibling.focus()
     }
   }
 
@@ -191,7 +190,7 @@ export const InputDate = ({
           {selectedDate.year ? selectedDate.year : date.year.name}
         </span>
       </p>
-      <button onClick={() => setShowDatePicker(!showDatePicker)}>
+      <button onClick={openOrCloseDatePicker}>
         <FontAwesomeIcon className="input-date-calendar" icon={faCalendar} />
       </button>
     </div>

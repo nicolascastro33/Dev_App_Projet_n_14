@@ -17,8 +17,8 @@ export const DatePicker = ({
   minDate: undefined | Date
   maxDate: undefined | Date
 }) => {
-  const [showDatePicker, setShowDatePicker] = useState<boolean>(true)
-  const [showSelectMonth, setShowSelectMonth] = useState<boolean>(true)
+  const [showDatePicker, setShowDatePicker] = useState<boolean>(false)
+  const [showSelectMonth, setShowSelectMonth] = useState<boolean>(false)
   const [currentMonth, setCurrentMonth] = useState<number>(
     new Date().getMonth()
   )
@@ -29,6 +29,16 @@ export const DatePicker = ({
   const [selectedDate, setSelectedDate] = useState<undefined | Date>(
     getDayWithoutHour()
   )
+
+  const openOrCloseDatePicker = () => {
+    if (showDatePicker) {
+      setShowDatePicker(false)
+      setCurrentMonth(new Date().getMonth())
+      setCurrentYear(new Date().getFullYear())
+    } else {
+      setShowDatePicker(true)
+    }
+  }
 
   const nextMonth = () => {
     if (currentMonth < 11) {
@@ -73,8 +83,7 @@ export const DatePicker = ({
   return (
     <>
       <InputDate
-        setShowDatePicker={setShowDatePicker}
-        showDatePicker={showDatePicker}
+        openOrCloseDatePicker={openOrCloseDatePicker}
         maxYearDate={maxDate?.getFullYear()}
         minYearDate={minDate?.getFullYear()}
       />
