@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCalendar } from '@fortawesome/free-solid-svg-icons'
-import { useState } from 'react'
-import { numberOfZeroYearData } from './utils'
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
+import { isSelectedDateValid, numberOfZeroYearData } from './utils'
 
 type TDate = {
   day: { name: string; maxValue: number; minValue: number }
@@ -17,22 +17,26 @@ type TDate = {
   }
 }
 
-type TSelectedDate = {
+export type TSelectedDate = {
   day: number | undefined
   month: number | undefined
   year: number | undefined
 }
 
 type TInputDateProps = {
+  validDate: undefined | Date
+  setValidDate: Dispatch<SetStateAction<undefined | Date>>
   openOrCloseDatePicker: any
-  maxYearDate: number | undefined
-  minYearDate: number | undefined
+  maxDate: Date | undefined
+  minDate: Date | undefined
 }
 
 export const InputDate = ({
+  validDate,
+  setValidDate,
   openOrCloseDatePicker,
-  maxYearDate,
-  minYearDate,
+  maxDate,
+  minDate,
 }: TInputDateProps) => {
   const date: TDate = {
     day: {
@@ -47,16 +51,41 @@ export const InputDate = ({
     },
     year: {
       name: 'aaaa',
-      minValue: minYearDate ? minYearDate : new Date().getFullYear() - 50,
-      maxValue: maxYearDate ? maxYearDate : new Date().getFullYear() + 50,
+      minValue: minDate ? minDate.getFullYear() : new Date().getFullYear() - 50,
+      maxValue: maxDate ? maxDate.getFullYear() : new Date().getFullYear() + 50,
     },
   }
 
   const [selectedDate, setSelectedDate] = useState<TSelectedDate>({
-    day: undefined,
-    month: undefined,
-    year: undefined,
+    day: validDate ? validDate.getDate() : undefined,
+    month: validDate ? validDate.getMonth() : undefined,
+    year: validDate ? validDate.getFullYear() : undefined,
   })
+  const isValid = useMemo<undefined | Date>(
+    () => isSelectedDateValid(selectedDate),
+    [selectedDate]
+  )
+
+  useEffect(() => {
+    setValidDate(isValid)
+  }, [isValid])
+
+  useEffect(() => {
+    if (validDate === isValid) return
+    if (validDate) {
+      setSelectedDate({
+        day: validDate.getDate(),
+        month: validDate.getMonth() + 1,
+        year: validDate.getFullYear(),
+      })
+    } else {
+      setSelectedDate({
+        day: undefined,
+        month: undefined,
+        year: undefined,
+      })
+    }
+  }, [validDate])
 
   const settingOnClick = (e: any) => {
     e.preventDefault()
@@ -155,8 +184,25 @@ export const InputDate = ({
     }
   }
 
+  const isDateInvalid = (
+    date: Date | undefined,
+    minDate: Date | undefined,
+    maxDate: Date | undefined
+  ) => {
+    if (date) {
+      if (date.getTime() < minDate!.getTime()) return true
+      if (date.getTime() > maxDate!.getTime()) return true
+    } else {
+      return false
+    }
+  }
+
   return (
-    <div className="input-date-wrapper">
+    <div
+      className={`input-date-wrapper ${
+        isDateInvalid(isValid, minDate, maxDate) ? 'invalid-date' : ''
+      } `}
+    >
       <p onClick={settingOnClick} onKeyDown={settingOnKeyDown}>
         <span
           id="input-day"

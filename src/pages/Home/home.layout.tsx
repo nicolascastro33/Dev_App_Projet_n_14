@@ -2,6 +2,7 @@ import SelectMenu from '../../components/SelectMenu'
 import { departments } from '../../data/department-options'
 import { states } from '../../data/states-options'
 import { DatePicker } from '../../components/DatePicker'
+import { Loader } from '../../utils/loader'
 
 function HomeLayout({
   saveEmployee,
@@ -14,7 +15,7 @@ function HomeLayout({
 }) {
   return (
     <main>
-      {isLoading && <div>Loading...</div>}
+      {isLoading && <Loader />}
       <div className="container">
         <h2>Create Employee</h2>
         <form
@@ -29,10 +30,22 @@ function HomeLayout({
           <input type="text" id="lastName" name="lastName" required />
 
           <label htmlFor="dateOfBirth">Date of Birth</label>
-          <input type="date" id="dateOfBirth" name="dateOfBirth" required />
+          <DatePicker
+            id="dateOfBirth"
+            name="dateOfBirth"
+            required={true}
+            minDate={new Date('1980-01-01')}
+            maxDate={new Date()}
+          />
 
           <label htmlFor="startDate">Start Date</label>
-          <input type="date" id="startDate" name="startDate" required />
+          <DatePicker
+            id="startDate"
+            name="startDate"
+            required={true}
+            minDate={new Date('1980-01-01')}
+            maxDate={new Date()}
+          />
           <fieldset className="address">
             <legend>Address</legend>
             <label htmlFor="street">Street</label>
@@ -54,11 +67,10 @@ function HomeLayout({
             </button>
           </div>
         </form>
-        <DatePicker minDate={new Date('1980-01-01')} maxDate={new Date()}/>
+        {errorSaving && (
+          <div className="errorSaving">There is a missing field</div>
+        )}
       </div>
-      {errorSaving && (
-        <div className="errorSaving">There is a missing field</div>
-      )}
     </main>
   )
 }

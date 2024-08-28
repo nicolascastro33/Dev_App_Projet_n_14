@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { SelectMonth } from './selectMonth'
 import arrow from '../../assets/arrow.png'
 import { monthNames } from './consts'
@@ -11,9 +11,15 @@ import {
 import { InputDate } from './inputDate'
 
 export const DatePicker = ({
+  id,
+  name,
+  required,
   minDate,
   maxDate,
 }: {
+  id: string
+  name: string
+  required: boolean | undefined
   minDate: undefined | Date
   maxDate: undefined | Date
 }) => {
@@ -26,21 +32,26 @@ export const DatePicker = ({
     new Date().getFullYear()
   )
 
-  const [selectedDate, setSelectedDate] = useState<undefined | Date>(
-    getDayWithoutHour()
-  )
+  const [selectedDate, setSelectedDate] = useState<undefined | Date>(undefined)
 
-  const openOrCloseDatePicker = () => {
+  useEffect(() => {
+    if (selectedDate) {
+      setCurrentMonth(selectedDate.getMonth())
+      setCurrentYear(selectedDate.getFullYear())
+    }
+  }, [selectedDate])
+
+  const openOrCloseDatePicker = (e: any) => {
+    e.preventDefault()
     if (showDatePicker) {
       setShowDatePicker(false)
-      setCurrentMonth(new Date().getMonth())
-      setCurrentYear(new Date().getFullYear())
     } else {
       setShowDatePicker(true)
     }
   }
 
-  const nextMonth = () => {
+  const nextMonth = (e: any) => {
+    e.preventDefault()
     if (currentMonth < 11) {
       setCurrentMonth(currentMonth + 1)
     } else {
@@ -49,7 +60,8 @@ export const DatePicker = ({
     }
   }
 
-  const previousMonth = () => {
+  const previousMonth = (e: any) => {
+    e.preventDefault()
     if (currentMonth > 0) {
       setCurrentMonth(currentMonth - 1)
     } else {
@@ -58,22 +70,25 @@ export const DatePicker = ({
     }
   }
 
-  const handleSelection = (event: any) => {
-    if (event.target.id === 'day') {
+  const handleSelection = (e: any) => {
+    e.preventDefault()
+    if (e.target.id === 'day') {
       setSelectedDate(
-        new Date(
-          currentYear,
-          currentMonth,
-          event.target.getAttribute('data-day')
-        )
+        new Date(currentYear, currentMonth, e.target.getAttribute('data-day'))
       )
+      setShowDatePicker(false)
     }
   }
 
-  const setTodayDate = () => {
-    setCurrentMonth(new Date().getMonth())
-    setCurrentYear(new Date().getFullYear())
+  const setTodayDate = (e: any) => {
+    e.preventDefault()
     setSelectedDate(getDayWithoutHour())
+    setShowDatePicker(false)
+  }
+
+  const eraseDate = (e: any) => {
+    e.preventDefault()
+    setSelectedDate(undefined)
   }
 
   const getTimeFromState = (day: number) => {
@@ -81,111 +96,136 @@ export const DatePicker = ({
   }
 
   return (
-    <>
+    <div className="date-picker">
       <InputDate
+        validDate={selectedDate}
+        setValidDate={setSelectedDate}
         openOrCloseDatePicker={openOrCloseDatePicker}
-        maxYearDate={maxDate?.getFullYear()}
-        minYearDate={minDate?.getFullYear()}
+        maxDate={maxDate}
+        minDate={minDate}
+      />
+      <input
+        className="hidden-input"
+        type="hidden"
+        id={id}
+        name={name}
+        required={required}
+        value={
+          selectedDate &&
+          `${selectedDate.getDate() < 10 ? '0' : ''}${selectedDate.getDate()}-${
+            selectedDate.getMonth() + 1 < 10 ? '0' : ''
+          }${selectedDate.getMonth() + 1}-${selectedDate.getFullYear()}`
+        }
       />
 
-      {showDatePicker && (
-        <div className="picker-wrapper">
-          {showSelectMonth && (
-            <SelectMonth
-              minDate={minDate}
-              maxDate={maxDate}
-              currentMonth={currentMonth}
-              currentYear={currentYear}
-              setCurrentMonth={setCurrentMonth}
-              setCurrentYear={setCurrentYear}
-              setShowSelectMonth={setShowSelectMonth}
-            />
-          )}
+      <div
+        className={`picker-wrapper ${
+          showDatePicker ? 'show-picker' : 'not-show-picker'
+        }`}
+      >
+        {showSelectMonth && (
+          <SelectMonth
+            minDate={minDate}
+            maxDate={maxDate}
+            currentMonth={currentMonth}
+            currentYear={currentYear}
+            setCurrentMonth={setCurrentMonth}
+            setCurrentYear={setCurrentYear}
+            setShowSelectMonth={setShowSelectMonth}
+          />
+        )}
 
-          <div className="picker-header">
-            <div
-              className="picker-header-months"
-              onClick={() => setShowSelectMonth(!showSelectMonth)}
-            >
-              <p>
-                {monthNames[currentMonth]} {currentYear}
-              </p>
-              <button disabled={showSelectMonth}>
+        <div className="picker-header">
+          <div
+            className="picker-header-months"
+            onClick={() => setShowSelectMonth(!showSelectMonth)}
+          >
+            <p>
+              {monthNames[currentMonth]} {currentYear}
+            </p>
+            <button disabled={showSelectMonth}>
+              <img
+                src={arrow}
+                alt="choose-month-button"
+                className="choose-month-button"
+              />
+            </button>
+          </div>
+          {!showSelectMonth && (
+            <div className="picker-header-buttons">
+              <button
+                onClick={previousMonth}
+                disabled={minDate && minDate?.getTime() > getTimeFromState(1)}
+              >
                 <img
                   src={arrow}
-                  alt="choose-month-button"
-                  className="choose-month-button"
+                  alt="chevron-back-outline"
+                  className="chevron-back-outline"
+                />
+              </button>
+              <button
+                onClick={nextMonth}
+                disabled={
+                  maxDate &&
+                  maxDate?.getTime() <
+                    getTimeFromState(
+                      getNumberOfDaysInMonth(currentYear, currentMonth)
+                    )
+                }
+              >
+                <img
+                  src={arrow}
+                  className="chevron-forward-outline"
+                  alt="chevron-forward-outline"
                 />
               </button>
             </div>
-            {!showSelectMonth && (
-              <div className="picker-header-buttons">
-                <button
-                  onClick={previousMonth}
-                  disabled={minDate && minDate?.getTime() > getTimeFromState(1)}
-                >
-                  <img
-                    src={arrow}
-                    alt="chevron-back-outline"
-                    className="chevron-back-outline"
-                  />
-                </button>
-                <button
-                  onClick={nextMonth}
-                  disabled={
-                    maxDate &&
-                    maxDate?.getTime() <
-                      getTimeFromState(
-                        getNumberOfDaysInMonth(currentYear, currentMonth)
-                      )
-                  }
-                >
-                  <img
-                    src={arrow}
-                    className="chevron-forward-outline"
-                    alt="chevron-forward-outline"
-                  />
-                </button>
-              </div>
-            )}
+          )}
+        </div>
+        <div className="picker-body">
+          <div className="seven-col-grid seven-col-grid-heading">
+            {getSortedDays(currentYear, currentMonth).map((day, index) => (
+              <p key={day + '-sorted-days-' + index}>{day}</p>
+            ))}
           </div>
-          <div className="picker-body">
-            <div className="seven-col-grid seven-col-grid-heading">
-              {getSortedDays(currentYear, currentMonth).map((day, index) => (
-                <p key={day + '-sorted-days-' + index}>{day}</p>
-              ))}
-            </div>
-            <div className="seven-col-grid" onClick={handleSelection}>
-              {range(
-                1,
-                getNumberOfDaysInMonth(currentYear, currentMonth) + 1
-              ).map((day, index) => (
-                <button
-                  key={day + '-' + index}
-                  id="day"
-                  data-day={day}
-                  disabled={
-                    (minDate && minDate?.getTime() > getTimeFromState(day)) ||
-                    (maxDate && maxDate?.getTime() < getTimeFromState(day))
-                  }
-                  className={
-                    selectedDate?.getTime() ===
+          <div className="seven-col-grid" onClick={handleSelection}>
+            {range(
+              1,
+              getNumberOfDaysInMonth(currentYear, currentMonth) + 1
+            ).map((day, index) => (
+              <button
+                key={day + '-' + index}
+                id="day"
+                data-day={day}
+                disabled={
+                  (minDate && minDate?.getTime() > getTimeFromState(day)) ||
+                  (maxDate && maxDate?.getTime() < getTimeFromState(day))
+                }
+                className={`${
+                  selectedDate?.getTime() ===
+                  new Date(currentYear, currentMonth, day, 0).getTime()
+                    ? 'active'
+                    : ''
+                } ${
+                  getDayWithoutHour().getTime() ===
+                    new Date(currentYear, currentMonth, day, 0).getTime() &&
+                  selectedDate?.getTime() !==
                     new Date(currentYear, currentMonth, day, 0).getTime()
-                      ? 'active'
-                      : ''
-                  }
-                >
-                  {day}
-                </button>
-              ))}
-            </div>
-            <div className="picker-body-buttons">
-              <button onClick={setTodayDate}>Today</button>
-              <button onClick={() => setSelectedDate(undefined)}>Erase</button>
-            </div>
+                    ? 'today'
+                    : ''
+                }
+                    `}
+              >
+                {day}
+              </button>
+            ))}
+          </div>
+          <div className="picker-body-buttons">
+            <button onClick={setTodayDate}>Today</button>
+            <button onClick={eraseDate}>Erase</button>
           </div>
         </div>
-      )}
-    </>
+      </div>
+    </div>
   )
 }

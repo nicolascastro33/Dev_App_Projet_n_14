@@ -19,27 +19,35 @@ function HomeController() {
     setIsLoading(true)
 
     const employeeFormData = new FormData(e.target)
-
+    let thereIsMissingField = false
     employeeFormData.forEach((value) => {
       if (!value || value.toString().trim().length === 0) {
-        setError(true)
+        thereIsMissingField = true
         return
       }
     })
 
-    dispatch(
-      addOneNewEmployee({
-        newEmployeeData: {
-          id: uuid().slice(0, 8),
-          ...Object.fromEntries(employeeFormData.entries()) as Omit<EmployeesInfo, 'id'>,
-        },
-      })
-    )
-      .unwrap()
-      .finally(() => {
-        setIsLoading(false)
-        setIsModalOpened(true)
-      })
+    if (thereIsMissingField) {
+      setError(true)
+      setIsLoading(false)
+    } else {
+      dispatch(
+        addOneNewEmployee({
+          newEmployeeData: {
+            id: uuid().slice(0, 8),
+            ...(Object.fromEntries(employeeFormData.entries()) as Omit<
+              EmployeesInfo,
+              'id'
+            >),
+          },
+        })
+      )
+        .unwrap()
+        .finally(() => {
+          setIsLoading(false)
+          setIsModalOpened(true)
+        })
+    }
   }
 
   return (

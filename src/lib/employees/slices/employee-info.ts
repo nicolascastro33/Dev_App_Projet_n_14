@@ -32,7 +32,7 @@ export const employeeSlice = createSlice({
         })
       })
       .addCase(addOneNewEmployee.fulfilled, (state, action) => {
-        const newEmployee = action.payload(newEmployee)
+        const newEmployee = action.payload
         employeeAdapter.addOne(state, newEmployee)
       })
   },

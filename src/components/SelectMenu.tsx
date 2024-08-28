@@ -9,14 +9,28 @@ type TSelectMenu = {
 function SelectMenu({ options, type }: { options: TSelectMenu; type: string }) {
   const [selectedItem, setSelectedItem] = useState<null | string>(null)
   const [activeMenu, setActiveMenu] = useState<boolean>(false)
+  const [value, setValue] = useState<TSelectMenu>(options)
+
+  const filteredData = (e: any) => {
+    const searchValue = e.target.value.trim().toLowerCase()
+    if (!searchValue) {
+      setValue(options)
+      return
+    }
+    const filtered = options.filter((option) =>
+      option.name.toLowerCase().includes(searchValue)
+    )
+    setValue(filtered)
+  }
 
   return (
-    <div
-      className={`selectMenu ${activeMenu ? 'activeMenu' : 'notActiveMenu'}`}
-    >
+    <div className={`selectMenu ${activeMenu ? 'activeMenu' : ''}`}>
       <div
         className="selectMenuHeader"
-        onClick={() => setActiveMenu(!activeMenu)}
+        onClick={() => {
+          setActiveMenu(!activeMenu)
+          setValue(options)
+        }}
       >
         {selectedItem !== null ? (
           <p className="selectedItem" id={type}>
@@ -30,12 +44,12 @@ function SelectMenu({ options, type }: { options: TSelectMenu; type: string }) {
           id={type}
           className={type}
           name={type}
-          value={selectedItem ? selectedItem : ""}
+          value={selectedItem ? selectedItem : ''}
         />
 
         <img
           src={arrow}
-          alt='arrowToActiveMenu'
+          alt="arrowToActiveMenu"
           className={`menuArrow ${
             activeMenu ? 'activeMenuArrow' : 'notActiveMenuArrow'
           }`}
@@ -43,23 +57,30 @@ function SelectMenu({ options, type }: { options: TSelectMenu; type: string }) {
       </div>
 
       {activeMenu && (
-        <div
-          className={`${
-            activeMenu ? 'activeMenuOptions' : 'notActiveMenuOptions'
-          }`}
-        >
-          {options.map((option, index) => (
-            <li
-              className="option"
-              key={`${option.abbreviation}-${index}`}
-              onClick={() => {
-                setSelectedItem(option.name)
-                setActiveMenu(false)
-              }}
-            >
-              {option.name}
-            </li>
-          ))}
+        <div className={`${activeMenu ? 'activeMenuOptions' : ''}`}>
+          <div className="searchSelectMenu">
+            <p>Search :</p>
+            <input type="search" onInput={filteredData} />
+          </div>
+          <div className="allOptions">
+            {value.length <= 0 ? (
+              <p className="no-option">No options</p>
+            ) : (
+              value.map((option, index) => (
+                <li
+                  className="option"
+                  key={`${option.abbreviation}-${index}`}
+                  onClick={() => {
+                    setSelectedItem(option.name)
+                    setActiveMenu(false)
+                    setValue(options)
+                  }}
+                >
+                  {option.name}
+                </li>
+              ))
+            )}
+          </div>
         </div>
       )}
     </div>

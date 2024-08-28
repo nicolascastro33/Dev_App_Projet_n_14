@@ -10,7 +10,8 @@ function Modal({
 }) {
   document.body.style.overflow = 'hidden'
 
-  const closeModal = () => {
+  const closeModal = (e: any) => {
+    e.preventDefault()
     document.body.style.overflow = 'unset'
     setIsModalOpened(false)
   }
