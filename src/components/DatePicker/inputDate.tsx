@@ -236,9 +236,9 @@ export const InputDate = ({
           {selectedDate.year ? selectedDate.year : date.year.name}
         </span>
       </p>
-      <button onClick={openOrCloseDatePicker}>
+      <div className="input-date-button" onClick={openOrCloseDatePicker}>
         <FontAwesomeIcon className="input-date-calendar" icon={faCalendar} />
-      </button>
+      </div>
     </div>
   )
 }

@@ -3,6 +3,18 @@ import { departments } from '../../data/department-options'
 import { states } from '../../data/states-options'
 import { DatePicker } from '../../components/DatePicker'
 import { Loader } from '../../utils/loader'
+import {
+  useJsApiLoader,
+  StandaloneSearchBox,
+  Autocomplete
+} from '@react-google-maps/api'
+import { useRef, useState } from 'react'
+
+type TAdressState = {
+  address: string
+  region: string
+  city: string
+}
 
 function HomeLayout({
   saveEmployee,
@@ -13,6 +25,24 @@ function HomeLayout({
   isLoading: boolean
   errorSaving: boolean
 }) {
+  const [adress, setAdress] = useState<undefined | TAdressState>(undefined)
+  const inputref = useRef<google.maps.places.SearchBox | null>(null)
+  const { isLoaded } = useJsApiLoader({
+    id: 'google-map-script',
+    googleMapsApiKey: import.meta.env.VITE_REACT_APP_GOOGLEMAPS_API_KEY,
+    libraries: ['places'],
+    region: 'us',
+  })
+
+  const handleOnPlacesChanged = () => {
+    if (inputref.current) {
+      let place = inputref.current.getPlaces()
+      if (place) {
+        console.log(place)
+      }
+    }
+  }
+
   return (
     <main>
       {isLoading && <Loader />}
@@ -49,7 +79,22 @@ function HomeLayout({
           <fieldset className="address">
             <legend>Address</legend>
             <label htmlFor="street">Street</label>
-            <input id="street" name="street" type="text" required />
+            {isLoaded ? (
+              <StandaloneSearchBox
+                onLoad={(ref) => (inputref.current = ref)}
+                onPlacesChanged={handleOnPlacesChanged}
+              >
+                <input
+                  id="street"
+                  name="street"
+                  type="text"
+                  placeholder=""
+                  required
+                />
+              </StandaloneSearchBox>
+            ) : (
+              <input id="street" name="street" type="text" required />
+            )}
 
             <label htmlFor="city">City</label>
             <input id="city" name="city" type="text" required />

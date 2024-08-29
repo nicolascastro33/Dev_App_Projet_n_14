@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { v4 as uuid } from 'uuid'
-
 import HomeLayout from './home.layout'
 import { useDispatch } from 'react-redux'
 import { addOneNewEmployee } from '../../lib/employees/usecases/add-one-new-employee'
@@ -13,6 +12,7 @@ function HomeController() {
   const [error, setError] = useState<boolean>(false)
   const [isModalOpened, setIsModalOpened] = useState<boolean>(false)
   const dispatch = useDispatch<AppDispatch>()
+
 
   const saveEmployee = (e: any): void => {
     e.preventDefault()

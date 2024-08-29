@@ -449,7 +449,8 @@ td {
     border-radius: 8px;
     padding: 5px;
   }
-  & button {
+  & .input-date-button {
+    cursor: pointer;
     position: absolute;
     right: 10px;
     top: 5px;
