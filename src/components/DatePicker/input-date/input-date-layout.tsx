@@ -1,7 +1,11 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCalendar } from '@fortawesome/free-solid-svg-icons'
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
-import { isSelectedDateValid, numberOfZeroYearData } from './utils'
+import { isSelectedDateValid, numberOfZeroYearData } from '../utils'
+import {
+  BehaviorType,
+  InputDateBehavior,
+} from './input-date-behavior'
 
 type TDate = {
   day: { name: string; maxValue: number; minValue: number }
@@ -99,89 +103,73 @@ export const InputDate = ({
   const settingOnKeyDown = (e: any) => {
     e.preventDefault()
     const keyPress = e.key
-    const dataType = e.target.getAttribute('data-type')
+    const dataType = e.target.getAttribute('data-type') as string
     const dataValue = selectedDate[dataType as keyof typeof selectedDate]
     const minValue = date[dataType as keyof typeof selectedDate].minValue
     const maxValue = date[dataType as keyof typeof selectedDate].maxValue
 
-    if (Number.isNaN(Number(keyPress)) && keyPress.length === 1) return
+    const inputDateBehavior = InputDateBehavior({
+      keyPress,
+      nextElement: e.target.nextElementSibling,
+      prevElement: e.target.previousElementSibling,
+      dataValue,
+      maxValue,
+    })
 
-    // if the user want to change the focus of the date
-    if (keyPress === 'ArrowRight' && e.target.nextElementSibling) {
-      e.target.nextElementSibling.focus()
-      return
-    }
-    if (keyPress === 'ArrowLeft' && e.target.previousElementSibling) {
-      e.target.previousElementSibling.focus()
-      return
-    }
-    if (keyPress === 'Enter') {
-      e.target.blur()
-      return
+    const changeDate = ({ value }: { value: number }) => {
+      setSelectedDate({
+        ...selectedDate,
+        [dataType]: value === 0 ? undefined : value,
+      })
     }
 
-    // If no date has been set before
-    if (!dataValue) {
-      if (keyPress === 'ArrowUp') {
-        setSelectedDate({
-          ...selectedDate,
-          [dataType]: minValue ? minValue : 1,
+    switch (inputDateBehavior.type) {
+      case BehaviorType.ArrowRight:
+        e.target.nextElementSibling.focus()
+        return
+      case BehaviorType.ArrowLeft:
+        e.target.previousElementSibling.focus()
+        return
+      case BehaviorType.Enter:
+        e.target.blur()
+        return
+      case BehaviorType.ArrowUp:
+        changeDate({
+          value: dataValue === maxValue ? minValue : dataValue! + 1,
         })
         return
-      }
-      if (keyPress === 'ArrowDown') {
-        setSelectedDate({
-          ...selectedDate,
-          [dataType]: maxValue,
+      case BehaviorType.ArrowDown:
+        changeDate({
+          value: dataValue === minValue ? maxValue : dataValue! - 1,
         })
         return
-      }
-      if (!Number.isNaN(Number(keyPress)) && Number(keyPress) >= 1) {
-        setSelectedDate({
-          ...selectedDate,
-          [dataType]: Number(keyPress),
-        })
-        if (Number(keyPress) * 10 > maxValue && e.target.nextElementSibling) {
-          e.target.nextElementSibling.focus()
-        }
-      }
+      case BehaviorType.ArrowUpWhenNoData:
+        changeDate({ value: minValue ? minValue : 1 })
+        return
+      case BehaviorType.ArrowDownWhenNoData:
+        changeDate({ value: maxValue })
+        return
+      case BehaviorType.Delete:
+        changeDate({ value: 0 })
+        return
+      case BehaviorType.AddValidDataWhenData:
+        changeDate({ value: inputDateBehavior.value })
+        return
+      case BehaviorType.AddValidDataWhenDataThenFocusNextElement:
+        changeDate({ value: inputDateBehavior.value })
+        e.target.nextElementSibling.focus()
+        return
+      case BehaviorType.AddValidDataWhenNoData:
+        changeDate({ value: Number(keyPress) })
+        return
+      case BehaviorType.AddValidDataWhenNoDataThenFocusNextElement:
+        changeDate({ value: Number(keyPress) })
+        e.target.nextElemetSibling.focus()
+        return
+      case BehaviorType.InvalidData:
+        return
     }
-    // if data has been set before
-    if (dataValue) {
-      if (keyPress === 'ArrowUp') {
-        setSelectedDate({
-          ...selectedDate,
-          [dataType]: dataValue === maxValue ? minValue : dataValue + 1,
-        })
-        return
-      }
-      if (keyPress === 'ArrowDown') {
-        setSelectedDate({
-          ...selectedDate,
-          [dataType]: dataValue === minValue ? maxValue : dataValue - 1,
-        })
-        return
-      }
-      if (keyPress === 'Backspace') {
-        setSelectedDate({
-          ...selectedDate,
-          [dataType]: undefined,
-        })
-        return
-      }
-      if (!Number.isNaN(Number(keyPress))) {
-        const result = dataValue * 10 + Number(keyPress)
-        const value = result <= maxValue ? result : Number(keyPress)
-        if (result > maxValue && Number(keyPress) === 0) return
-        setSelectedDate({
-          ...selectedDate,
-          [dataType]: value,
-        })
-        if (value * 10 > maxValue && e.target.nextElementSibling) {
-          e.target.nextElementSibling.focus()
-        }
-      }
-    }
+
   }
 
   const isDateInvalid = (

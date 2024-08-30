@@ -1,5 +1,5 @@
 import { dayNames } from '../consts'
-import { TSelectedDate } from '../inputDate'
+import { TSelectedDate } from '../input-date/input-date-layout'
 
 export const getNumberOfDaysInMonth = (year: number, month: number) => {
   return new Date(year, month + 1, 0).getDate()
@@ -81,5 +81,5 @@ export const isSelectedDateValid = (selectedDate: TSelectedDate) => {
     0
   )
 
-  return isNaN(date.getTime()) ? undefined : date;
+  return isNaN(date.getTime()) ? undefined : date
 }

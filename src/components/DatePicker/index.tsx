@@ -8,7 +8,7 @@ import {
   getSortedDays,
   range,
 } from './utils'
-import { InputDate } from './inputDate'
+import { InputDate } from './input-date/input-date-layout'
 
 export const DatePicker = ({
   id,

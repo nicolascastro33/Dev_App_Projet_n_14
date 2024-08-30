@@ -6,7 +6,6 @@ import { Loader } from '../../utils/loader'
 import {
   useJsApiLoader,
   StandaloneSearchBox,
-  Autocomplete
 } from '@react-google-maps/api'
 import { useRef, useState } from 'react'
 
@@ -31,7 +30,6 @@ function HomeLayout({
     id: 'google-map-script',
     googleMapsApiKey: import.meta.env.VITE_REACT_APP_GOOGLEMAPS_API_KEY,
     libraries: ['places'],
-    region: 'us',
   })
 
   const handleOnPlacesChanged = () => {
