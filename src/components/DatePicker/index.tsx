@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { SelectMonth } from './selectMonth'
+import { SelectMonth } from './select-month/select-month-layout'
 import arrow from '../../assets/arrow.png'
 import { monthNames } from './consts'
 import {
@@ -9,6 +9,7 @@ import {
   range,
 } from './utils'
 import { InputDate } from './input-date/input-date-layout'
+import './style.css'
 
 export const DatePicker = ({
   id,
@@ -111,10 +112,13 @@ export const DatePicker = ({
         name={name}
         required={required}
         value={
-          selectedDate &&
-          `${selectedDate.getDate() < 10 ? '0' : ''}${selectedDate.getDate()}-${
-            selectedDate.getMonth() + 1 < 10 ? '0' : ''
-          }${selectedDate.getMonth() + 1}-${selectedDate.getFullYear()}`
+          selectedDate
+            ? `${
+                selectedDate.getDate() < 10 ? '0' : ''
+              }${selectedDate.getDate()}-${
+                selectedDate.getMonth() + 1 < 10 ? '0' : ''
+              }${selectedDate.getMonth() + 1}-${selectedDate.getFullYear()}`
+            : ''
         }
       />
 

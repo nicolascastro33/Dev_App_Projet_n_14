@@ -1,7 +1,7 @@
-import { Dispatch, SetStateAction } from 'react'
-import { getAllYears, isDisabled } from './utils'
+import { Dispatch, SetStateAction, useEffect } from 'react'
+import { getAllYears, isDisabled } from '../utils'
 import { useState } from 'react'
-import { monthNames } from './consts'
+import { monthNames } from '../consts'
 
 type TSelectMonth = {
   currentMonth: number
@@ -24,19 +24,36 @@ export const SelectMonth = ({
 }: TSelectMonth) => {
   const [yearOpen, setYearOpen] = useState<number>(currentYear)
   const [isOpen, setIsOpen] = useState<boolean>(false)
+
   const closeSelectMonth = (e: any) => {
     if (!e.target.closest('.select-month')) setShowSelectMonth(false)
   }
 
-  const clickOnYear = (e: any, year: number) => {
+  useEffect(() => {
+    const yearComponent = document.querySelector(`#select-year-${yearOpen}`)
+    if (yearComponent) yearComponent.scrollIntoView({ behavior: 'smooth' })
+  }, [yearOpen])
+
+  const clickOnYear = async (year: number) => {
     if (yearOpen === year) {
       setIsOpen(!isOpen)
     } else {
+      setIsOpen(false)
       setYearOpen(year)
       setIsOpen(true)
     }
-    const yearComponent = e.target.closest(`#select-year-${year}`)
-    yearComponent.scrollIntoView({ behavior: 'smooth'})
+  }
+
+  const selectAMonth = ({
+    indexMonth,
+    year,
+  }: {
+    indexMonth: number
+    year: number
+  }) => {
+    setCurrentMonth(indexMonth)
+    setCurrentYear(year)
+    setShowSelectMonth(false)
   }
 
   return (
@@ -48,8 +65,8 @@ export const SelectMonth = ({
               <div
                 className="select-year-header"
                 key={`year-${indexYear}-${year}`}
-                onClick={(e) => {
-                  clickOnYear(e, year)
+                onClick={() => {
+                  clickOnYear(year)
                 }}
               >
                 <p>{year}</p>
@@ -70,11 +87,7 @@ export const SelectMonth = ({
                         : ''
                     }
                     disabled={isDisabled(minDate, maxDate, year, indexMonth)}
-                    onClick={() => {
-                      setCurrentMonth(indexMonth)
-                      setCurrentYear(year)
-                      setShowSelectMonth(false)
-                    }}
+                    onClick={() => selectAMonth({ indexMonth, year })}
                   >
                     {month}
                   </button>

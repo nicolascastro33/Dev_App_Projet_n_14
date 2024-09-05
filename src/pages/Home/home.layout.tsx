@@ -1,19 +1,8 @@
-import SelectMenu from '../../components/SelectMenu'
+import SelectMenu from '../../components/SelectMenu/select-menu-controller'
 import { departments } from '../../data/department-options'
-import { states } from '../../data/states-options'
 import { DatePicker } from '../../components/DatePicker'
-import { Loader } from '../../utils/loader'
-import {
-  useJsApiLoader,
-  StandaloneSearchBox,
-} from '@react-google-maps/api'
-import { useRef, useState } from 'react'
-
-type TAdressState = {
-  address: string
-  region: string
-  city: string
-}
+import { Loader, LoaderWrapper } from '../../utils/loader'
+import { AutoCompleteAdressForm } from '../../components/AutoCompleteAdressForm'
 
 function HomeLayout({
   saveEmployee,
@@ -24,26 +13,13 @@ function HomeLayout({
   isLoading: boolean
   errorSaving: boolean
 }) {
-  const [adress, setAdress] = useState<undefined | TAdressState>(undefined)
-  const inputref = useRef<google.maps.places.SearchBox | null>(null)
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: import.meta.env.VITE_REACT_APP_GOOGLEMAPS_API_KEY,
-    libraries: ['places'],
-  })
-
-  const handleOnPlacesChanged = () => {
-    if (inputref.current) {
-      let place = inputref.current.getPlaces()
-      if (place) {
-        console.log(place)
-      }
-    }
-  }
-
   return (
     <main>
-      {isLoading && <Loader />}
+      {isLoading && (
+        <LoaderWrapper>
+          <Loader />
+        </LoaderWrapper>
+      )}
       <div className="container">
         <h2>Create Employee</h2>
         <form
@@ -65,7 +41,6 @@ function HomeLayout({
             minDate={new Date('1980-01-01')}
             maxDate={new Date()}
           />
-
           <label htmlFor="startDate">Start Date</label>
           <DatePicker
             id="startDate"
@@ -74,36 +49,9 @@ function HomeLayout({
             minDate={new Date('1980-01-01')}
             maxDate={new Date()}
           />
-          <fieldset className="address">
-            <legend>Address</legend>
-            <label htmlFor="street">Street</label>
-            {isLoaded ? (
-              <StandaloneSearchBox
-                onLoad={(ref) => (inputref.current = ref)}
-                onPlacesChanged={handleOnPlacesChanged}
-              >
-                <input
-                  id="street"
-                  name="street"
-                  type="text"
-                  placeholder=""
-                  required
-                />
-              </StandaloneSearchBox>
-            ) : (
-              <input id="street" name="street" type="text" required />
-            )}
-
-            <label htmlFor="city">City</label>
-            <input id="city" name="city" type="text" required />
-
-            <label htmlFor="state">State</label>
-            <SelectMenu type="state" options={states} />
-            <label htmlFor="zipCode">Zip Code</label>
-            <input id="zipCode" name="zipCode" type="number" required />
-          </fieldset>
+          <AutoCompleteAdressForm />
           <label htmlFor="department">Department</label>
-          <SelectMenu type="department" options={departments} />
+          <SelectMenu type="department" optionsProps={departments} />
           <div className="buttonWrapper">
             <button className="saveEmployeeButton" type="submit">
               Save

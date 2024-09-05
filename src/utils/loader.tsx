@@ -10,6 +10,16 @@ const rotate = keyframes`
     }
 `
 
+export const LoaderWrapper = styled.div`
+  position: fixed;
+  background-color: rgb(240, 237, 237, 0.5);
+  z-index: 10;
+  height: 100vh;
+  width: 100%;
+  top: 0;
+  left: 0;
+`
+
 export const Loader = styled.div`
   position: absolute;
   top: 50%;

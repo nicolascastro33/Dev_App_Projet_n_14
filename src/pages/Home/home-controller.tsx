@@ -13,11 +13,9 @@ function HomeController() {
   const [isModalOpened, setIsModalOpened] = useState<boolean>(false)
   const dispatch = useDispatch<AppDispatch>()
 
-
   const saveEmployee = (e: any): void => {
     e.preventDefault()
     setIsLoading(true)
-
     const employeeFormData = new FormData(e.target)
     let thereIsMissingField = false
     employeeFormData.forEach((value) => {
@@ -45,7 +43,9 @@ function HomeController() {
         .unwrap()
         .finally(() => {
           setIsLoading(false)
+          setError(false)
           setIsModalOpened(true)
+          e.target.reset()
         })
     }
   }

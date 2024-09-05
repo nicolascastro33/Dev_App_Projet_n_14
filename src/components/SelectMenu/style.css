@@ -1,0 +1,71 @@
+.selectMenu {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    border: 1px solid black;
+    background-color: rgb(240, 237, 237);
+  }
+  
+  .selectMenuHeader {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    height: 40px;
+  }
+  
+  .menuArrow {
+    width: 10px;
+  }
+  
+  .activeMenuArrow {
+    transform: rotate(180deg);
+  }
+  
+  .activeMenuOptions {
+    display: block;
+    z-index: 1;
+    position: absolute;
+    width: 100%;
+    top: 45px;
+    border-radius: 5px;
+    border: 1px solid black;
+    background-color: rgb(240, 237, 237);
+  }
+  
+  .allOptions {
+    overflow: scroll;
+    max-height: 150px;
+    &::-webkit-scrollbar {
+      width: 0;
+      background-color: transparent;
+    }
+  }
+  
+  .option {
+    list-style-type: none;
+    cursor: pointer;
+    padding: 5px 10px;
+    text-overflow: hidden;
+    border: 1px solid rgb(240, 237, 237);
+    &:hover {
+      border: 1px solid black;
+    }
+  }
+  .no-option {
+    padding: 5px 10px;
+    text-overflow: hidden;
+  }
+  
+  .searchSelectMenu {
+    padding: 5px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px dashed black;
+    & input {
+      margin-top: 5px;
+      height: 20px;
+    }
+  }

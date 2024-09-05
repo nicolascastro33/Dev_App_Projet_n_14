@@ -6,6 +6,8 @@ import { Provider } from './Provider.tsx'
 import { FakeEmployeeGateway } from './lib/employees/infra/fake-employee.gateway.ts'
 import { createStore } from './lib/create-store.ts'
 
+
+
 const employeeGateway = new FakeEmployeeGateway()
 employeeGateway.allEmployees = [
   {

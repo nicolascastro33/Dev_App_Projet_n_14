@@ -55,10 +55,10 @@ export type Behavior =
 
 type InputDateBehaviorType = {
   keyPress: string
-  nextElement?: HTMLElement
-  prevElement?: HTMLElement
+  nextElement?: boolean
+  prevElement?: boolean
   dataValue: number | undefined
-  maxValue: number | undefined
+  maxValue?: number | undefined
 }
 
 export const InputDateBehavior = ({
@@ -71,11 +71,15 @@ export const InputDateBehavior = ({
   if (Number.isNaN(Number(keyPress)) && keyPress.length === 1) {
     return { type: BehaviorType.InvalidData }
   }
-  if (keyPress === 'ArrowRight' && nextElement) {
-    return { type: BehaviorType.ArrowRight }
+  if (keyPress === 'ArrowRight') {
+    return nextElement
+      ? { type: BehaviorType.ArrowRight }
+      : { type: BehaviorType.InvalidData }
   }
-  if (keyPress === 'ArrowLeft' && prevElement) {
-    return { type: BehaviorType.ArrowLeft }
+  if (keyPress === 'ArrowLeft') {
+    return prevElement
+      ? { type: BehaviorType.ArrowLeft }
+      : { type: BehaviorType.InvalidData }
   }
   if (keyPress === 'Enter') {
     return { type: BehaviorType.Enter }
@@ -110,6 +114,9 @@ export const InputDateBehavior = ({
     }
     if (keyPress === 'ArrowDown') {
       return { type: BehaviorType.ArrowDownWhenNoData }
+    }
+    if (keyPress === 'Backspace') {
+      return { type: BehaviorType.InvalidData }
     }
     if (maxValue && Number(keyPress) * 10 > maxValue && nextElement) {
       return { type: BehaviorType.AddValidDataWhenNoDataThenFocusNextElement }

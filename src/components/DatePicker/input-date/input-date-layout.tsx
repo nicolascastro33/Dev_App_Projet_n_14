@@ -2,10 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCalendar } from '@fortawesome/free-solid-svg-icons'
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
 import { isSelectedDateValid, numberOfZeroYearData } from '../utils'
-import {
-  BehaviorType,
-  InputDateBehavior,
-} from './input-date-behavior'
+import { BehaviorType, InputDateBehavior } from './input-date-behavior'
 
 type TDate = {
   day: { name: string; maxValue: number; minValue: number }
@@ -110,11 +107,12 @@ export const InputDate = ({
 
     const inputDateBehavior = InputDateBehavior({
       keyPress,
-      nextElement: e.target.nextElementSibling,
-      prevElement: e.target.previousElementSibling,
+      nextElement: e.target.nextElementSibling ? true : false,
+      prevElement: e.target.previousElementSibling ? true : false,
       dataValue,
       maxValue,
     })
+
 
     const changeDate = ({ value }: { value: number }) => {
       setSelectedDate({
@@ -169,7 +167,6 @@ export const InputDate = ({
       case BehaviorType.InvalidData:
         return
     }
-
   }
 
   const isDateInvalid = (
@@ -178,18 +175,21 @@ export const InputDate = ({
     maxDate: Date | undefined
   ) => {
     if (date) {
-      if (date.getTime() < minDate!.getTime()) return true
-      if (date.getTime() > maxDate!.getTime()) return true
+      if (date.getTime() < minDate!.getTime()) return 'invalid-date'
+      if (date.getTime() > maxDate!.getTime()) return 'invalid-date'
+      return 'valid-date'
     } else {
-      return false
+      return ''
     }
   }
 
   return (
     <div
-      className={`input-date-wrapper ${
-        isDateInvalid(isValid, minDate, maxDate) ? 'invalid-date' : ''
-      } `}
+      className={`input-date-wrapper ${isDateInvalid(
+        isValid,
+        minDate,
+        maxDate
+      )} `}
     >
       <p onClick={settingOnClick} onKeyDown={settingOnKeyDown}>
         <span

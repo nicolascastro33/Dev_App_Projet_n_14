@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../../lib/create-store'
 import { selectEmployeesViewModel, ViewModelType } from './employees-viewmodal'
 import { ReactNode } from 'react'
-import DataTables from '../../components/DataTables'
+import DataTables from '../../components/DataTables/data-tables-controller'
 
 function EmployeesLayout() {
   const viewModel = useSelector<

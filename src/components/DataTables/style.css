@@ -1,0 +1,136 @@
+.dataTables {
+    font-size: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    padding: 0 10px 0 10px;
+  }
+  /* Setting above the table */
+  .dataTablesHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+    & .entriesForm {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      & select {
+        border: 1px solid black;
+        height: 25px;
+      }
+    }
+    & .searchTable {
+      display: flex;
+      gap: 10px;
+    }
+  }
+  
+  /* Table Header */
+  th {
+    padding: 10px;
+    & .button-filter {
+      display: flex;
+      gap: 10px;
+    }
+  }
+  
+  .all-triangles-filter {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    & .triangle-filter-active {
+      border-color: transparent transparent purple transparent;
+    }
+    & span {
+      width: 0px;
+      height: 0px;
+      border-style: solid;
+      border-width: 0 5px 6px 5px;
+      border-color: transparent transparent grey transparent;
+      &:last-child {
+        transform: rotate(180deg);
+      }
+    }
+  }
+  
+  /* Table Body */
+  
+  tbody {
+    & .tr-data:first-child {
+      border-top: 1px solid black;
+    }
+    & .tr-data:last-child {
+      border-bottom: 1px solid black;
+    }
+  }
+  
+  .tr-data:nth-child(even) {
+    background-color: #ccc;
+    &:hover {
+      .td-active {
+        background-color: grey;
+      }
+    }
+    & .td-active {
+      background-color: rgb(158, 154, 154);
+    }
+  }
+  .tr-data:nth-child(odd) {
+    background-color: #fff;
+    &:hover {
+      background-color: #ccc;
+      & .td-active {
+        background-color: grey;
+      }
+    }
+    & .td-active {
+      background-color: #ccc;
+    }
+  }
+  
+  td {
+    padding: 10px;
+  }
+  
+  /* Setting below the table */
+  .dataTablesFooter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    & button {
+      padding: 2px;
+      border: 1px solid white;
+    }
+    & .pagination-active {
+      cursor: pointer;
+      color: black;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+    & .pagination-inactive {
+      cursor: not-allowed;
+      color: gray;
+    }
+    & span {
+      border: 1px solid black;
+      width: 35px;
+      height: 30px;
+      border-radius: 5px;
+      border: 1px solid rgb(167, 161, 161);
+      background-color: rgb(240, 237, 237);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }

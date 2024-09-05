@@ -1,37 +1,29 @@
-import { useState } from 'react'
-import arrow from '../assets/arrow.png'
+import { SelectMenuOptionsType } from './select-menu-controller'
+import arrow from '../../assets/arrow.png'
+import './style.css'
 
-type TSelectMenu = {
-  name: string
-  abbreviation: string
-}[]
+type TSelectMenuView = {
+  activeMenu: boolean
+  selectedItem: null | string
+  options: SelectMenuOptionsType
+  type: string
+  filteredData: any
+  selectAnOption: any
+  openOrCloseSelectMenu: any
+}
 
-function SelectMenu({ options, type }: { options: TSelectMenu; type: string }) {
-  const [selectedItem, setSelectedItem] = useState<null | string>(null)
-  const [activeMenu, setActiveMenu] = useState<boolean>(false)
-  const [value, setValue] = useState<TSelectMenu>(options)
-
-  const filteredData = (e: any) => {
-    const searchValue = e.target.value.trim().toLowerCase()
-    if (!searchValue) {
-      setValue(options)
-      return
-    }
-    const filtered = options.filter((option) =>
-      option.name.toLowerCase().includes(searchValue)
-    )
-    setValue(filtered)
-  }
-
+export const SelectMenuView = ({
+  activeMenu,
+  selectedItem,
+  options,
+  type,
+  filteredData,
+  selectAnOption,
+  openOrCloseSelectMenu,
+}: TSelectMenuView) => {
   return (
     <div className={`selectMenu ${activeMenu ? 'activeMenu' : ''}`}>
-      <div
-        className="selectMenuHeader"
-        onClick={() => {
-          setActiveMenu(!activeMenu)
-          setValue(options)
-        }}
-      >
+      <div className="selectMenuHeader" onClick={openOrCloseSelectMenu}>
         {selectedItem !== null ? (
           <p className="selectedItem" id={type}>
             {selectedItem}
@@ -63,18 +55,14 @@ function SelectMenu({ options, type }: { options: TSelectMenu; type: string }) {
             <input type="search" onInput={filteredData} />
           </div>
           <div className="allOptions">
-            {value.length <= 0 ? (
+            {options.length <= 0 ? (
               <p className="no-option">No options</p>
             ) : (
-              value.map((option, index) => (
+              options.map((option, index) => (
                 <li
                   className="option"
                   key={`${option.abbreviation}-${index}`}
-                  onClick={() => {
-                    setSelectedItem(option.name)
-                    setActiveMenu(false)
-                    setValue(options)
-                  }}
+                  onClick={() => selectAnOption({ option: option.name })}
                 >
                   {option.name}
                 </li>
@@ -86,5 +74,3 @@ function SelectMenu({ options, type }: { options: TSelectMenu; type: string }) {
     </div>
   )
 }
-
-export default SelectMenu
