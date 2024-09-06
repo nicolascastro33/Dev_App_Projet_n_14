@@ -2,6 +2,8 @@ export enum BehaviorType {
   InvalidData = 'INVALID_DATA',
   ArrowRight = 'ARROW_RIGHT',
   ArrowLeft = 'ARROW_LEFT',
+  Tab = 'TAB',
+  TabShift = 'TAB_SHIFT',
   ArrowUpWhenNoData = 'ARROW_UP_WHEN_NO_DATA',
   ArrowDownWhenNoData = 'ARROW_DOWN_WHEN_NO_DATA',
   AddValidDataWhenNoData = 'ADD_VALID_DATA_WHEN_NO_DATA',
@@ -11,6 +13,7 @@ export enum BehaviorType {
   ArrowUp = 'ARROW_UP',
   ArrowDown = 'ARROW_DOWN',
   Enter = 'ENTER',
+  OpenOrCloseDatePicker = 'OPEN_OR_CLOSE_DATE_PICKER',
   Delete = 'DELETE',
 }
 
@@ -19,6 +22,8 @@ export type Behavior =
       type: BehaviorType.ArrowLeft
     }
   | { type: BehaviorType.ArrowRight }
+  | { type: BehaviorType.Tab }
+  | { type: BehaviorType.TabShift }
   | {
       type: BehaviorType.ArrowUp
     }
@@ -50,27 +55,42 @@ export type Behavior =
     }
   | { type: BehaviorType.Enter }
   | {
+      type: BehaviorType.OpenOrCloseDatePicker
+    }
+  | {
       type: BehaviorType.InvalidData
     }
 
 type InputDateBehaviorType = {
+  shiftKey: boolean
   keyPress: string
   nextElement?: boolean
   prevElement?: boolean
+  isButtonFocus: boolean
   dataValue: number | undefined
   maxValue?: number | undefined
 }
 
 export const InputDateBehavior = ({
+  shiftKey,
   keyPress,
   nextElement,
   prevElement,
+  isButtonFocus,
   dataValue,
   maxValue,
 }: InputDateBehaviorType): Behavior => {
   if (Number.isNaN(Number(keyPress)) && keyPress.length === 1) {
     return { type: BehaviorType.InvalidData }
   }
+
+  if (keyPress === 'Tab') {
+    if (shiftKey) {
+      return { type: BehaviorType.TabShift }
+    }
+    return { type: BehaviorType.Tab }
+  }
+
   if (keyPress === 'ArrowRight') {
     return nextElement
       ? { type: BehaviorType.ArrowRight }
@@ -82,6 +102,9 @@ export const InputDateBehavior = ({
       : { type: BehaviorType.InvalidData }
   }
   if (keyPress === 'Enter') {
+    if (isButtonFocus) {
+      return { type: BehaviorType.OpenOrCloseDatePicker }
+    }
     return { type: BehaviorType.Enter }
   }
   if (dataValue) {
@@ -118,10 +141,12 @@ export const InputDateBehavior = ({
     if (keyPress === 'Backspace') {
       return { type: BehaviorType.InvalidData }
     }
-    if (maxValue && Number(keyPress) * 10 > maxValue && nextElement) {
-      return { type: BehaviorType.AddValidDataWhenNoDataThenFocusNextElement }
+    if (!Number.isNaN(Number(keyPress))) {
+      if (maxValue && Number(keyPress) * 10 > maxValue && nextElement) {
+        return { type: BehaviorType.AddValidDataWhenNoDataThenFocusNextElement }
+      }
+      return { type: BehaviorType.AddValidDataWhenNoData }
     }
-    return { type: BehaviorType.AddValidDataWhenNoData }
   }
   return { type: BehaviorType.InvalidData }
 }

@@ -86,7 +86,9 @@ export const SelectMonth = ({
                         ? 'selected-month'
                         : ''
                     }
-                    disabled={isDisabled(minDate, maxDate, year, indexMonth)}
+                    disabled={
+                      !isOpen && isDisabled(minDate, maxDate, year, indexMonth)
+                    }
                     onClick={() => selectAMonth({ indexMonth, year })}
                   >
                     {month}

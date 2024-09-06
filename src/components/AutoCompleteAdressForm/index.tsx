@@ -24,13 +24,12 @@ export class AutoCompleteAdressForm
   }
 
   componentDidMount(): void {
-    const options = {
-      types: ['geocode'],
-      componentRestrictions: { country: 'US' },
-    }
     this.autocomplete = new google.maps.places.Autocomplete(
       this.inputRef.current,
-      options
+      {
+        types: ['geocode'],
+        componentRestrictions: { country: 'US' },
+      }
     )
     this.autocomplete.addListener('place_changed', this.handlePlaceSelect)
   }

@@ -1,6 +1,13 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCalendar } from '@fortawesome/free-solid-svg-icons'
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
+import {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useId,
+  useMemo,
+  useState,
+} from 'react'
 import { isSelectedDateValid, numberOfZeroYearData } from '../utils'
 import { BehaviorType, InputDateBehavior } from './input-date-behavior'
 
@@ -56,7 +63,7 @@ export const InputDate = ({
       maxValue: maxDate ? maxDate.getFullYear() : new Date().getFullYear() + 50,
     },
   }
-
+  const buttonId = useId()
   const [selectedDate, setSelectedDate] = useState<TSelectedDate>({
     day: validDate ? validDate.getDate() : undefined,
     month: validDate ? validDate.getMonth() : undefined,
@@ -102,17 +109,23 @@ export const InputDate = ({
     const keyPress = e.key
     const dataType = e.target.getAttribute('data-type') as string
     const dataValue = selectedDate[dataType as keyof typeof selectedDate]
-    const minValue = date[dataType as keyof typeof selectedDate].minValue
-    const maxValue = date[dataType as keyof typeof selectedDate].maxValue
+    const minValue = date[dataType as keyof typeof selectedDate]?.minValue
+    const maxValue = date[dataType as keyof typeof selectedDate]?.maxValue
+    const allfocusableTabindexElements = document.querySelectorAll(
+      '[tabindex], input:not(.hidden-input), button:not(:disabled)'
+    )
+    const focusable = [...allfocusableTabindexElements] as HTMLElement[]
+    const index = focusable.indexOf(e.target)
 
     const inputDateBehavior = InputDateBehavior({
+      shiftKey: e.shiftKey,
       keyPress,
       nextElement: e.target.nextElementSibling ? true : false,
       prevElement: e.target.previousElementSibling ? true : false,
+      isButtonFocus: e.target.className === 'input-date-button',
       dataValue,
       maxValue,
     })
-
 
     const changeDate = ({ value }: { value: number }) => {
       setSelectedDate({
@@ -128,8 +141,21 @@ export const InputDate = ({
       case BehaviorType.ArrowLeft:
         e.target.previousElementSibling.focus()
         return
+      case BehaviorType.Tab:
+        const nextElement = focusable[index + 1]
+        nextElement.focus()
+        return
+      case BehaviorType.TabShift:
+        const previousElement = focusable[index - 1]
+        previousElement.focus()
+        return
       case BehaviorType.Enter:
-        e.target.blur()
+        const nextButton = focusable.find((element) => element.id === buttonId)
+        const indexButton = nextButton && focusable.indexOf(nextButton)
+        if (indexButton) focusable[indexButton + 1].focus()
+        return
+      case BehaviorType.OpenOrCloseDatePicker:
+        openOrCloseDatePicker(e)
         return
       case BehaviorType.ArrowUp:
         changeDate({
@@ -190,8 +216,9 @@ export const InputDate = ({
         minDate,
         maxDate
       )} `}
+      onKeyDown={settingOnKeyDown}
     >
-      <p onClick={settingOnClick} onKeyDown={settingOnKeyDown}>
+      <p onClick={settingOnClick}>
         <span
           id="input-day"
           data-type="day"
@@ -224,7 +251,12 @@ export const InputDate = ({
           {selectedDate.year ? selectedDate.year : date.year.name}
         </span>
       </p>
-      <div className="input-date-button" onClick={openOrCloseDatePicker}>
+      <div
+        className="input-date-button"
+        id={buttonId}
+        onClick={openOrCloseDatePicker}
+        tabIndex={0}
+      >
         <FontAwesomeIcon className="input-date-calendar" icon={faCalendar} />
       </div>
     </div>
