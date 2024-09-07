@@ -65,6 +65,10 @@ export const SelectMonth = ({
               <div
                 className="select-year-header"
                 key={`year-${indexYear}-${year}`}
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') clickOnYear(year)
+                }}
                 onClick={() => {
                   clickOnYear(year)
                 }}

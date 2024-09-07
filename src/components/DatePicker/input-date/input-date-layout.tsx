@@ -9,7 +9,10 @@ import {
   useState,
 } from 'react'
 import { isSelectedDateValid, numberOfZeroYearData } from '../utils'
-import { BehaviorType, InputDateBehavior } from './input-date-behavior'
+import {
+  BehaviorType,
+  InputDateKeyPressBehavior,
+} from './input-date-keypress-behavior'
 
 type TDate = {
   day: { name: string; maxValue: number; minValue: number }
@@ -111,17 +114,25 @@ export const InputDate = ({
     const dataValue = selectedDate[dataType as keyof typeof selectedDate]
     const minValue = date[dataType as keyof typeof selectedDate]?.minValue
     const maxValue = date[dataType as keyof typeof selectedDate]?.maxValue
+
     const allfocusableTabindexElements = document.querySelectorAll(
       '[tabindex], input:not(.hidden-input), button:not(:disabled)'
     )
     const focusable = [...allfocusableTabindexElements] as HTMLElement[]
     const index = focusable.indexOf(e.target)
 
-    const inputDateBehavior = InputDateBehavior({
+    const parentElement = focusable[index].closest('.input-date-wrapper')
+    const elementsFromTheInput = focusable.filter(
+      (element) => element.closest('.input-date-wrapper') === parentElement
+    )
+    const indexInElementsFromTheInput = elementsFromTheInput.indexOf(e.target)
+
+    const inputDateKeyPressBehavior = InputDateKeyPressBehavior({
       shiftKey: e.shiftKey,
       keyPress,
-      nextElement: e.target.nextElementSibling ? true : false,
-      prevElement: e.target.previousElementSibling ? true : false,
+      nextElement:
+        indexInElementsFromTheInput + 1 <= elementsFromTheInput.length - 1,
+      prevElement: indexInElementsFromTheInput - 1 >= 0,
       isButtonFocus: e.target.className === 'input-date-button',
       dataValue,
       maxValue,
@@ -134,12 +145,12 @@ export const InputDate = ({
       })
     }
 
-    switch (inputDateBehavior.type) {
+    switch (inputDateKeyPressBehavior.type) {
       case BehaviorType.ArrowRight:
-        e.target.nextElementSibling.focus()
+        elementsFromTheInput[indexInElementsFromTheInput + 1].focus()
         return
       case BehaviorType.ArrowLeft:
-        e.target.previousElementSibling.focus()
+        elementsFromTheInput[indexInElementsFromTheInput - 1].focus()
         return
       case BehaviorType.Tab:
         const nextElement = focusable[index + 1]
@@ -150,9 +161,16 @@ export const InputDate = ({
         previousElement.focus()
         return
       case BehaviorType.Enter:
-        const nextButton = focusable.find((element) => element.id === buttonId)
-        const indexButton = nextButton && focusable.indexOf(nextButton)
-        if (indexButton) focusable[indexButton + 1].focus()
+        if (focusable[index + 1].className === 'input-date') {
+          focusable[index + 1].focus()
+        } else {
+          const nextButton = focusable.find(
+            (element) => element.id === buttonId
+          )
+          const indexButton = nextButton && focusable.indexOf(nextButton)
+          if (indexButton) focusable[indexButton + 1].focus()
+        }
+
         return
       case BehaviorType.OpenOrCloseDatePicker:
         openOrCloseDatePicker(e)
@@ -177,10 +195,10 @@ export const InputDate = ({
         changeDate({ value: 0 })
         return
       case BehaviorType.AddValidDataWhenData:
-        changeDate({ value: inputDateBehavior.value })
+        changeDate({ value: inputDateKeyPressBehavior.value })
         return
       case BehaviorType.AddValidDataWhenDataThenFocusNextElement:
-        changeDate({ value: inputDateBehavior.value })
+        changeDate({ value: inputDateKeyPressBehavior.value })
         e.target.nextElementSibling.focus()
         return
       case BehaviorType.AddValidDataWhenNoData:

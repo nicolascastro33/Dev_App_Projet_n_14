@@ -61,7 +61,7 @@ export type Behavior =
       type: BehaviorType.InvalidData
     }
 
-type InputDateBehaviorType = {
+type InputDateKeyPressBehaviorType = {
   shiftKey: boolean
   keyPress: string
   nextElement?: boolean
@@ -71,7 +71,7 @@ type InputDateBehaviorType = {
   maxValue?: number | undefined
 }
 
-export const InputDateBehavior = ({
+export const InputDateKeyPressBehavior = ({
   shiftKey,
   keyPress,
   nextElement,
@@ -79,7 +79,7 @@ export const InputDateBehavior = ({
   isButtonFocus,
   dataValue,
   maxValue,
-}: InputDateBehaviorType): Behavior => {
+}: InputDateKeyPressBehaviorType): Behavior => {
   if (Number.isNaN(Number(keyPress)) && keyPress.length === 1) {
     return { type: BehaviorType.InvalidData }
   }

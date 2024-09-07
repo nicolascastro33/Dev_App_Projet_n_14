@@ -46,6 +46,7 @@ export const DatePicker = ({
     e.preventDefault()
     if (showDatePicker) {
       setShowDatePicker(false)
+      setShowSelectMonth(false)
     } else {
       setShowDatePicker(true)
     }
@@ -96,6 +97,100 @@ export const DatePicker = ({
     return new Date(currentYear, currentMonth, day).getTime()
   }
 
+  const keyPressBehavior = (e: any) => {
+    e.preventDefault()
+    if (e.key === 'Escape') {
+      setShowDatePicker(false)
+      return
+    }
+
+    const parentElement = e.target.closest('.picker-wrapper')
+    const allFocusableParentElements = parentElement.querySelectorAll(
+      '[tabindex], input:not(.hidden-input), button:not(:disabled)'
+    )
+    const focusable = [...allFocusableParentElements] as HTMLElement[]
+    const index = focusable.indexOf(e.target)
+
+    if (e.key.includes('Arrow') || e.key === 'Tab') {
+      if (
+        (e.key === 'ArrowLeft' || (e.key === 'Tab' && e.shiftKey)) &&
+        index - 1 >= 0
+      ) {
+        focusable[index - 1].focus()
+        return
+      }
+
+      if (
+        (e.key === 'ArrowRight' || (e.key === 'Tab' && !e.shiftKey)) &&
+        index + 1 <= focusable.length - 1
+      ) {
+        focusable[index + 1].focus()
+        return
+      }
+
+      if (e.key === 'ArrowUp') {
+        if (index > 2) {
+          const indexNewFocus = index - 7 < 0 ? 0 : index - 7
+          focusable[indexNewFocus].focus()
+        } else {
+          const allFocusableElements = document.querySelectorAll(
+            '[tabindex], input:not(.hidden-input), button:not(:disabled)'
+          )
+          const allFocusable = [...allFocusableElements] as HTMLElement[]
+          const index = allFocusable.indexOf(focusable[0])
+          allFocusable[index - 1].focus()
+          openOrCloseDatePicker(e)
+        }
+        return
+      }
+
+      if (e.key === 'ArrowDown') {
+        if (index < focusable.length - 2) {
+          const indexNewFocus =
+            index + 7 >= focusable.length - 1 ? focusable.length - 2 : index + 7
+          focusable[indexNewFocus].focus()
+        } else {
+          const allFocusableElements = document.querySelectorAll(
+            '[tabindex], input:not(.hidden-input), button:not(:disabled)'
+          )
+          const allFocusable = [...allFocusableElements] as HTMLElement[]
+          const index = allFocusable.indexOf(focusable[focusable.length - 1])
+          allFocusable[index + 1].focus()
+          openOrCloseDatePicker(e)
+        }
+
+        return
+      }
+    }
+    if (e.key === 'Enter') {
+      console.log(e.target)
+      if (e.target.className === 'picker-header-months') {
+        setShowSelectMonth(!showSelectMonth)
+        return
+      }
+      if (e.target.id === 'day') {
+        handleSelection(e)
+        return
+      }
+      if (e.target.id === 'picker-header-previous-button') {
+        previousMonth(e)
+        return
+      }
+      if (e.target.id === 'picker-header-next-button') {
+        nextMonth(e)
+        return
+      }
+      if (e.target.id === 'picker-body-today-button') {
+        setTodayDate(e)
+        return
+      }
+      if (e.target.id === 'picker-body-erase-button') {
+        eraseDate(e)
+        return
+      }
+    }
+  }
+
   return (
     <div className="date-picker">
       <InputDate
@@ -124,9 +219,8 @@ export const DatePicker = ({
 
       {showDatePicker && (
         <div
-          className={`picker-wrapper ${
-            showDatePicker ? 'show-picker' : 'not-show-picker'
-          }`}
+          className="picker-wrapper show-picker"
+          onKeyDown={keyPressBehavior}
         >
           {showSelectMonth && (
             <SelectMonth
@@ -141,24 +235,23 @@ export const DatePicker = ({
           )}
 
           <div className="picker-header">
-            <div
+            <button
               className="picker-header-months"
               onClick={() => setShowSelectMonth(!showSelectMonth)}
             >
               <p>
                 {monthNames[currentMonth]} {currentYear}
               </p>
-              <button disabled={showSelectMonth}>
-                <img
-                  src={arrow}
-                  alt="choose-month-button"
-                  className="choose-month-button"
-                />
-              </button>
-            </div>
+              <img
+                src={arrow}
+                alt="choose-month-button"
+                className="choose-month-button"
+              />
+            </button>
             {!showSelectMonth && (
               <div className="picker-header-buttons">
                 <button
+                  id="picker-header-previous-button"
                   onClick={previousMonth}
                   disabled={minDate && minDate?.getTime() > getTimeFromState(1)}
                 >
@@ -169,6 +262,7 @@ export const DatePicker = ({
                   />
                 </button>
                 <button
+                  id="picker-header-next-button"
                   onClick={nextMonth}
                   disabled={
                     maxDate &&
@@ -190,7 +284,7 @@ export const DatePicker = ({
           <div className="picker-body">
             <div className="seven-col-grid seven-col-grid-heading">
               {getSortedDays(currentYear, currentMonth).map((day, index) => (
-                <p key={day + '-sorted-days-' + index}>{day}</p>
+                <p key={`${day}-sorted-days-${index}`}>{day}</p>
               ))}
             </div>
             <div className="seven-col-grid" onClick={handleSelection}>
@@ -199,7 +293,7 @@ export const DatePicker = ({
                 getNumberOfDaysInMonth(currentYear, currentMonth) + 1
               ).map((day, index) => (
                 <button
-                  key={day + '-' + index}
+                  key={`${day}-${index}`}
                   id="day"
                   data-day={day}
                   disabled={
@@ -226,8 +320,12 @@ export const DatePicker = ({
               ))}
             </div>
             <div className="picker-body-buttons">
-              <button onClick={setTodayDate}>Today</button>
-              <button onClick={eraseDate}>Erase</button>
+              <button id="picker-body-today-button" onClick={setTodayDate}>
+                Today
+              </button>
+              <button id="picker-body-erase-button" onClick={eraseDate}>
+                Erase
+              </button>
             </div>
           </div>
         </div>
