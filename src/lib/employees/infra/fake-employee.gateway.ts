@@ -19,7 +19,6 @@ export class FakeEmployeeGateway implements EmployeeGateway {
     )
   }
   async addNewEmployee({ info }: { info: EmployeesInfo }): Promise<void> {
-    console.log(info)
     await this.allEmployees?.push(info)
 
   }

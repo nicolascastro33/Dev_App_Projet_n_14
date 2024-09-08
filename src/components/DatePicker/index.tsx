@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useId, useState } from 'react'
 import { SelectMonth } from './select-month/select-month-layout'
 import arrow from '../../assets/arrow.png'
 import { monthNames } from './consts'
@@ -32,7 +32,7 @@ export const DatePicker = ({
   const [currentYear, setCurrentYear] = useState<number>(
     new Date().getFullYear()
   )
-
+  const pickerHeaderMonthId = useId()
   const [selectedDate, setSelectedDate] = useState<undefined | Date>(undefined)
 
   useEffect(() => {
@@ -42,14 +42,33 @@ export const DatePicker = ({
     }
   }, [selectedDate])
 
+  useEffect(() => {
+    if (showDatePicker) {
+      const pickerHeaderMonth = document.getElementById(
+        pickerHeaderMonthId
+      ) as HTMLElement
+      if (pickerHeaderMonth) pickerHeaderMonth.focus()
+    }
+  }, [showDatePicker])
+
+  useEffect(() => {
+    if (showSelectMonth) {
+      const headerMonth = document.getElementById(
+        `select-${currentYear}-header`
+      ) as HTMLElement
+      console.log(headerMonth)
+      if (headerMonth) headerMonth.focus()
+    }
+  }, [showSelectMonth])
+
   const openOrCloseDatePicker = (e: any) => {
     e.preventDefault()
     if (showDatePicker) {
       setShowDatePicker(false)
       setShowSelectMonth(false)
-    } else {
-      setShowDatePicker(true)
+      return
     }
+    setShowDatePicker(true)
   }
 
   const nextMonth = (e: any) => {
@@ -98,6 +117,7 @@ export const DatePicker = ({
   }
 
   const keyPressBehavior = (e: any) => {
+    if (showSelectMonth) return
     e.preventDefault()
     if (e.key === 'Escape') {
       setShowDatePicker(false)
@@ -163,7 +183,6 @@ export const DatePicker = ({
       }
     }
     if (e.key === 'Enter') {
-      console.log(e.target)
       if (e.target.className === 'picker-header-months') {
         setShowSelectMonth(!showSelectMonth)
         return
@@ -237,7 +256,11 @@ export const DatePicker = ({
           <div className="picker-header">
             <button
               className="picker-header-months"
-              onClick={() => setShowSelectMonth(!showSelectMonth)}
+              onClick={(e) => {
+                e.preventDefault()
+                setShowSelectMonth(!showSelectMonth)
+              }}
+              id={pickerHeaderMonthId}
             >
               <p>
                 {monthNames[currentMonth]} {currentYear}

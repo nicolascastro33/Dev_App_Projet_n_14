@@ -50,17 +50,22 @@ export const getAllYears = (
 export const isDisabled = (
   minDate: Date | undefined,
   maxDate: Date | undefined,
+  isOpen: boolean,
   year: number,
+  yearOpen: number,
   month: number
 ) => {
-  const start = minDate
-    ? minDate
-    : new Date(new Date().getFullYear() - 50, 1, 0)
-  const end = maxDate ? maxDate : new Date(new Date().getFullYear() + 50, 30, 1)
-  const date = new Date(year, month, 0)
-
-  if (date.getTime() >= start.getTime() && date.getTime() <= end.getTime()) {
-    return false
+  if (yearOpen === year && isOpen) {
+    const start = minDate
+      ? minDate
+      : new Date(new Date().getFullYear() - 50, 1, 0)
+    const end = maxDate
+      ? maxDate
+      : new Date(new Date().getFullYear() + 50, 30, 1)
+    const date = new Date(year, month, 0)
+    if (date.getTime() >= start.getTime() && date.getTime() <= end.getTime()) {
+      return false
+    }
   }
   return true
 }

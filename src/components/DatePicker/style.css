@@ -1,7 +1,9 @@
 .date-picker {
   position: relative;
   & *:focus {
-    outline: 4px auto -webkit-focus-ring-color;
+    outline: 4px auto blue;
+    color: blue;
+  
   }
 }
 
