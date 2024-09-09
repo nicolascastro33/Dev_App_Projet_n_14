@@ -1,4 +1,7 @@
-import { SelectMenuOptionsType } from './select-menu-controller'
+import {
+  SelectMenuOptionsType,
+  useOutsideClick,
+} from './select-menu-controller'
 import arrow from '../../assets/arrow.png'
 import './style.css'
 
@@ -7,9 +10,11 @@ type TSelectMenuView = {
   selectedItem: null | string
   options: SelectMenuOptionsType
   type: string
-  filteredData: any
-  selectAnOption: any
-  openOrCloseSelectMenu: any
+  filteredData: (e: any) => void
+  selectAnOption: ({ option }: { option: string }) => void
+  openOrCloseSelectMenu: () => void
+  keyDownBehavior: (e: any) => void
+  handleClickOutside: () => void
 }
 
 export const SelectMenuView = ({
@@ -20,10 +25,19 @@ export const SelectMenuView = ({
   filteredData,
   selectAnOption,
   openOrCloseSelectMenu,
+  keyDownBehavior,
+  handleClickOutside,
 }: TSelectMenuView) => {
+  const ref = useOutsideClick(handleClickOutside)
+
   return (
-    <div className={`selectMenu ${activeMenu ? 'activeMenu' : ''}`}>
-      <div className="selectMenuHeader" onClick={openOrCloseSelectMenu}>
+    <div className={`selectMenu ${activeMenu ? 'activeMenu' : ''}`} ref={ref} onKeyDown={keyDownBehavior}
+>
+      <div
+        className="selectMenuHeader"
+        onClick={openOrCloseSelectMenu}
+        tabIndex={0}
+      >
         {selectedItem !== null ? (
           <p className="selectedItem" id={type}>
             {selectedItem}
@@ -34,7 +48,7 @@ export const SelectMenuView = ({
         <input
           type="hidden"
           id={type}
-          className={type}
+          className={`hidden-input ${type}`}
           name={type}
           value={selectedItem ? selectedItem : ''}
         />
@@ -63,6 +77,7 @@ export const SelectMenuView = ({
                   className="option"
                   key={`${option.abbreviation}-${index}`}
                   onClick={() => selectAnOption({ option: option.name })}
+                  tabIndex={0}
                 >
                   {option.name}
                 </li>

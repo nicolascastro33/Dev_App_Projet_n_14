@@ -1,4 +1,4 @@
-import { useEffect, useId, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { SelectMonth } from './select-month/select-month-layout'
 import arrow from '../../assets/arrow.png'
 import { monthNames } from './consts'
@@ -56,13 +56,40 @@ export const DatePicker = ({
       const headerMonth = document.getElementById(
         `select-${currentYear}-header`
       ) as HTMLElement
-      console.log(headerMonth)
       if (headerMonth) headerMonth.focus()
+    } else {
+      const pickerHeaderMonth = document.getElementById(
+        pickerHeaderMonthId
+      ) as HTMLElement
+      if (pickerHeaderMonth) pickerHeaderMonth.focus()
     }
   }, [showSelectMonth])
 
-  const openOrCloseDatePicker = (e: any) => {
-    e.preventDefault()
+  const handleClickOutside = () => {
+    setShowDatePicker(false)
+    setShowSelectMonth(false)
+  }
+
+  const useOutsideClick = (callback: () => void) => {
+    const ref = useRef<HTMLElement | undefined>()
+    useEffect(() => {
+      const handleClick = (event: any) => {
+        if (ref.current && !ref.current.contains(event.target)) {
+          callback()
+        }
+      }
+      document.addEventListener('click', handleClick)
+      return () => {
+        document.removeEventListener('click', handleClick)
+      }
+    }, [ref])
+    return ref
+  }
+
+  const ref = useOutsideClick(handleClickOutside)
+
+  const openOrCloseDatePicker = (e: any | undefined) => {
+    e?.preventDefault()
     if (showDatePicker) {
       setShowDatePicker(false)
       setShowSelectMonth(false)
@@ -120,7 +147,13 @@ export const DatePicker = ({
     if (showSelectMonth) return
     e.preventDefault()
     if (e.key === 'Escape') {
-      setShowDatePicker(false)
+      openOrCloseDatePicker(e)
+      const allFocusableElements = document.querySelectorAll(
+        '[tabindex], input:not(.hidden-input), button:not(:disabled)'
+      )
+      const allFocusable = [...allFocusableElements] as HTMLElement[]
+      const index = allFocusable.indexOf(e.target)
+      allFocusable[index - 1].focus()
       return
     }
 
@@ -149,9 +182,18 @@ export const DatePicker = ({
       }
 
       if (e.key === 'ArrowUp') {
-        if (index > 2) {
+        if (e.target.id === 'day') {
           const indexNewFocus = index - 7 < 0 ? 0 : index - 7
           focusable[indexNewFocus].focus()
+        } else if (
+          e.target.id === 'picker-body-today-button' ||
+          e.target.id === 'picker-body-erase-button'
+        ) {
+          const days = focusable.filter((element) =>
+            element.getAttribute('data-day')
+          )
+          const lastDay = days[days.length - 1]
+          lastDay.focus()
         } else {
           const allFocusableElements = document.querySelectorAll(
             '[tabindex], input:not(.hidden-input), button:not(:disabled)'
@@ -165,6 +207,13 @@ export const DatePicker = ({
       }
 
       if (e.key === 'ArrowDown') {
+        if (index === 0) {
+          const firstDay = focusable.find(
+            (element) => element.getAttribute('data-day') === '1'
+          )
+          firstDay?.focus()
+          return
+        }
         if (index < focusable.length - 2) {
           const indexNewFocus =
             index + 7 >= focusable.length - 1 ? focusable.length - 2 : index + 7
@@ -210,8 +259,34 @@ export const DatePicker = ({
     }
   }
 
+  const clickPressBehavior = (e: any) => {
+    const eventClassName = e.target.className
+    const buttonMonth = document.getElementById(pickerHeaderMonthId)
+    if (
+      eventClassName.includes('picker-wrapper') ||
+      eventClassName === 'picker-header'
+    ) {
+      buttonMonth?.focus()
+      return
+    }
+    if (eventClassName === 'picker-body-buttons') {
+      const todayButton = document.getElementById(
+        'picker-body-today-button'
+      ) as HTMLElement
+      todayButton?.focus()
+      return
+    }
+    if (eventClassName === 'seven-col-grid' || e.target.disabled) {
+      const firstDay = [...document.querySelectorAll('#day')].find(
+        (day) => day.getAttribute('data-day') === '1'
+      ) as HTMLElement
+      firstDay?.focus()
+      return
+    }
+  }
+
   return (
-    <div className="date-picker">
+    <div className="date-picker" ref={ref}>
       <InputDate
         validDate={selectedDate}
         setValidDate={setSelectedDate}
@@ -240,6 +315,7 @@ export const DatePicker = ({
         <div
           className="picker-wrapper show-picker"
           onKeyDown={keyPressBehavior}
+          onClick={clickPressBehavior}
         >
           {showSelectMonth && (
             <SelectMonth
@@ -250,6 +326,7 @@ export const DatePicker = ({
               setCurrentMonth={setCurrentMonth}
               setCurrentYear={setCurrentYear}
               setShowSelectMonth={setShowSelectMonth}
+              showSelectMonth={showSelectMonth}
             />
           )}
 

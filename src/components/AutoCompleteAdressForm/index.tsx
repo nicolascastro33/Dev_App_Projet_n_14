@@ -43,8 +43,9 @@ export class AutoCompleteAdressForm
     }
   }
 
-  handleChange(event: any) {
-    this.setState({ [event.target.name]: event.target.value })
+  handleChange(e: any) {
+    e.preventDefault()
+    this.setState({ [e.target.name]: e.target.value })
   }
 
   handlePlaceSelect() {

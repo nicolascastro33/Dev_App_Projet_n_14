@@ -9,6 +9,7 @@ type TSelectMonth = {
   setCurrentMonth: Dispatch<SetStateAction<number>>
   setCurrentYear: Dispatch<SetStateAction<number>>
   setShowSelectMonth: Dispatch<SetStateAction<boolean>>
+  showSelectMonth: boolean
   maxDate: Date | undefined
   minDate: Date | undefined
 }
@@ -19,6 +20,7 @@ export const SelectMonth = ({
   setCurrentMonth,
   setCurrentYear,
   setShowSelectMonth,
+  showSelectMonth,
   maxDate,
   minDate,
 }: TSelectMonth) => {
@@ -58,6 +60,7 @@ export const SelectMonth = ({
   }
 
   const keyPressBehavior = (e: any) => {
+    if (!showSelectMonth) return
     e.preventDefault()
     if (e.key === 'Escape') {
       setShowSelectMonth(false)
@@ -100,12 +103,15 @@ export const SelectMonth = ({
 
     if (e.key === 'ArrowDown') {
       if (index < focusable.length - 1) {
-        if (focusable[index + 1].className === 'select-year-header') {
+        if (
+          focusable[index + 1].className === 'select-year-header' ||
+          e.target.className === 'select-year-header'
+        ) {
           focusable[index + 1].focus()
           return
         }
+
         if (focusable[index + 4].className === 'select-year-header') {
-          console.log(document.getElementById(`select-year-${yearOpen - 1}`))
           const nextFocusElement = document
             .getElementById(`select-year-${yearOpen - 1}`)
             ?.querySelector('.select-year-header') as HTMLElement
@@ -132,6 +138,15 @@ export const SelectMonth = ({
       }
       return
     }
+
+    if (e.key === 'Tab') {
+      if (e.shiftKey) {
+        focusable[index - 1]?.focus()
+      } else {
+        focusable[index + 1]?.focus()
+      }
+    }
+    return
   }
 
   return (
