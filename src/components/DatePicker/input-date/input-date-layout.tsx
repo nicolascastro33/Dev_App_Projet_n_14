@@ -9,10 +9,7 @@ import {
   useState,
 } from 'react'
 import { isSelectedDateValid, numberOfZeroYearData } from '../utils'
-import {
-  BehaviorType,
-  InputDateKeyPressBehavior,
-} from './input-date-keypress-behavior'
+import { BehaviorType, KeyPressBehavior } from '../keypress-behavior'
 
 type TDate = {
   day: { name: string; maxValue: number; minValue: number }
@@ -127,7 +124,7 @@ export const InputDate = ({
     )
     const indexInElementsFromTheInput = elementsFromTheInput.indexOf(e.target)
 
-    const inputDateKeyPressBehavior = InputDateKeyPressBehavior({
+    const keyPressBehavior = KeyPressBehavior({
       shiftKey: e.shiftKey,
       keyPress,
       nextElement:
@@ -145,7 +142,7 @@ export const InputDate = ({
       })
     }
 
-    switch (inputDateKeyPressBehavior.type) {
+    switch (keyPressBehavior.type) {
       case BehaviorType.ArrowRight:
         elementsFromTheInput[indexInElementsFromTheInput + 1].focus()
         return
@@ -195,10 +192,10 @@ export const InputDate = ({
         changeDate({ value: 0 })
         return
       case BehaviorType.AddValidDataWhenData:
-        changeDate({ value: inputDateKeyPressBehavior.value })
+        changeDate({ value: keyPressBehavior.value })
         return
       case BehaviorType.AddValidDataWhenDataThenFocusNextElement:
-        changeDate({ value: inputDateKeyPressBehavior.value })
+        changeDate({ value: keyPressBehavior.value })
         e.target.nextElementSibling.focus()
         return
       case BehaviorType.AddValidDataWhenNoData:

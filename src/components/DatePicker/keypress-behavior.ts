@@ -4,6 +4,8 @@ export enum BehaviorType {
   ArrowLeft = 'ARROW_LEFT',
   Tab = 'TAB',
   TabShift = 'TAB_SHIFT',
+  TabAndCloseElement = 'TAB_AND_CLOSE_ELEMENT',
+  TabShiftAndCloseElement = 'TAB_SHIFT_AND_CLOSE_ELEMENT',
   ArrowUpWhenNoData = 'ARROW_UP_WHEN_NO_DATA',
   ArrowDownWhenNoData = 'ARROW_DOWN_WHEN_NO_DATA',
   AddValidDataWhenNoData = 'ADD_VALID_DATA_WHEN_NO_DATA',
@@ -61,17 +63,18 @@ export type Behavior =
       type: BehaviorType.InvalidData
     }
 
-type InputDateKeyPressBehaviorType = {
-  shiftKey: boolean
+type KeyPressBehaviorType = {
+  shiftKey?: boolean
   keyPress: string
   nextElement?: boolean
   prevElement?: boolean
-  isButtonFocus: boolean
-  dataValue: number | undefined
-  maxValue?: number | undefined
+  isButtonFocus?: boolean
+  isItAnInputKeyPress?: boolean
+  dataValue?: number
+  maxValue?: number
 }
 
-export const InputDateKeyPressBehavior = ({
+export const KeyPressBehavior = ({
   shiftKey,
   keyPress,
   nextElement,
@@ -79,7 +82,8 @@ export const InputDateKeyPressBehavior = ({
   isButtonFocus,
   dataValue,
   maxValue,
-}: InputDateKeyPressBehaviorType): Behavior => {
+}: KeyPressBehaviorType): Behavior => {
+
   if (Number.isNaN(Number(keyPress)) && keyPress.length === 1) {
     return { type: BehaviorType.InvalidData }
   }

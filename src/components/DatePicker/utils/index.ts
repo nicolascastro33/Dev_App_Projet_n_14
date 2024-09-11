@@ -88,3 +88,39 @@ export const isSelectedDateValid = (selectedDate: TSelectedDate) => {
 
   return isNaN(date.getTime()) ? undefined : date
 }
+
+export const getTimeFromState = (year: number, month: number, day: number) => {
+  return new Date(year, month, day).getTime()
+}
+
+export const isNewElementInParentElement = ({
+  newElement,
+  parentElementClassName,
+}: {
+  newElement: HTMLElement
+  parentElementClassName: string
+}) => {
+  return newElement.closest(`.${parentElementClassName}`) ? true : false
+}
+
+export const focusNextElementFromOutsideTheParentElement = ({
+  allFocusableElementsOfTheDocument,
+  parentElementClassName,
+}: {
+  allFocusableElementsOfTheDocument: HTMLElement[]
+  parentElementClassName: string
+}): void => {
+  const allFocusElementsInParentElement =
+    allFocusableElementsOfTheDocument.filter((element) =>
+      element.closest(`#${parentElementClassName}`)
+    )
+    console.log(allFocusElementsInParentElement)
+  const lastElement =
+    allFocusElementsInParentElement[allFocusElementsInParentElement.length - 1]
+
+  const nextElement =
+    allFocusableElementsOfTheDocument[
+      allFocusableElementsOfTheDocument.indexOf(lastElement) + 1
+    ]
+  nextElement.focus()
+}

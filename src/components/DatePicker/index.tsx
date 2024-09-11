@@ -1,11 +1,14 @@
-import { useEffect, useId, useRef, useState } from 'react'
+import { LegacyRef, useEffect, useId, useRef, useState } from 'react'
 import { SelectMonth } from './select-month/select-month-layout'
-import arrow from '../../assets/arrow.png'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { monthNames } from './consts'
 import {
   getDayWithoutHour,
   getNumberOfDaysInMonth,
   getSortedDays,
+  getTimeFromState,
+  isNewElementInParentElement,
   range,
 } from './utils'
 import { InputDate } from './input-date/input-date-layout'
@@ -88,11 +91,15 @@ export const DatePicker = ({
 
   const ref = useOutsideClick(handleClickOutside)
 
+  const closeDatePicker = () => {
+    setShowDatePicker(false)
+    setShowSelectMonth(false)
+  }
+
   const openOrCloseDatePicker = (e: any | undefined) => {
     e?.preventDefault()
     if (showDatePicker) {
-      setShowDatePicker(false)
-      setShowSelectMonth(false)
+      closeDatePicker()
       return
     }
     setShowDatePicker(true)
@@ -139,123 +146,149 @@ export const DatePicker = ({
     setSelectedDate(undefined)
   }
 
-  const getTimeFromState = (day: number) => {
-    return new Date(currentYear, currentMonth, day).getTime()
-  }
-
   const keyPressBehavior = (e: any) => {
     if (showSelectMonth) return
     e.preventDefault()
+    const allFocusableElements = document.querySelectorAll(
+      '[tabindex], input:not(.hidden-input), button:not(:disabled)'
+    )
+    const focusable = [...allFocusableElements] as HTMLElement[]
+    const index = focusable.indexOf(e.target)
+
+    const nextElement = focusable[index + 1]
+    const previousElement = focusable[index - 1]
+
+    const isNextElementInParentElement = isNewElementInParentElement({
+      newElement: nextElement,
+      parentElementClassName: 'picker-wrapper',
+    })
+
+    const isPreviousElementInParentElement = isNewElementInParentElement({
+      newElement: previousElement,
+      parentElementClassName: 'picker-wrapper',
+    })
+
+    const buttonOpeningDatePicker = e.target
+      .closest('.date-picker')
+      .querySelector('.input-date-button')
+
     if (e.key === 'Escape') {
-      openOrCloseDatePicker(e)
-      const allFocusableElements = document.querySelectorAll(
-        '[tabindex], input:not(.hidden-input), button:not(:disabled)'
-      )
-      const allFocusable = [...allFocusableElements] as HTMLElement[]
-      const index = allFocusable.indexOf(e.target)
-      allFocusable[index - 1].focus()
+      closeDatePicker()
+      buttonOpeningDatePicker?.focus()
       return
     }
 
-    const parentElement = e.target.closest('.picker-wrapper')
-    const allFocusableParentElements = parentElement.querySelectorAll(
-      '[tabindex], input:not(.hidden-input), button:not(:disabled)'
-    )
-    const focusable = [...allFocusableParentElements] as HTMLElement[]
-    const index = focusable.indexOf(e.target)
-
-    if (e.key.includes('Arrow') || e.key === 'Tab') {
-      if (
-        (e.key === 'ArrowLeft' || (e.key === 'Tab' && e.shiftKey)) &&
-        index - 1 >= 0
-      ) {
-        focusable[index - 1].focus()
-        return
+    if (e.key === 'Tab') {
+      if (e.shiftKey) {
+        previousElement.focus()
+        if (!isPreviousElementInParentElement) closeDatePicker()
+      } else {
+        nextElement.focus()
+        if (!isNextElementInParentElement) closeDatePicker()
       }
-
-      if (
-        (e.key === 'ArrowRight' || (e.key === 'Tab' && !e.shiftKey)) &&
-        index + 1 <= focusable.length - 1
-      ) {
-        focusable[index + 1].focus()
-        return
-      }
-
-      if (e.key === 'ArrowUp') {
-        if (e.target.id === 'day') {
-          const indexNewFocus = index - 7 < 0 ? 0 : index - 7
-          focusable[indexNewFocus].focus()
-        } else if (
-          e.target.id === 'picker-body-today-button' ||
-          e.target.id === 'picker-body-erase-button'
-        ) {
-          const days = focusable.filter((element) =>
-            element.getAttribute('data-day')
-          )
-          const lastDay = days[days.length - 1]
-          lastDay.focus()
-        } else {
-          const allFocusableElements = document.querySelectorAll(
-            '[tabindex], input:not(.hidden-input), button:not(:disabled)'
-          )
-          const allFocusable = [...allFocusableElements] as HTMLElement[]
-          const index = allFocusable.indexOf(focusable[0])
-          allFocusable[index - 1].focus()
-          openOrCloseDatePicker(e)
-        }
-        return
-      }
-
-      if (e.key === 'ArrowDown') {
-        if (index === 0) {
-          const firstDay = focusable.find(
-            (element) => element.getAttribute('data-day') === '1'
-          )
-          firstDay?.focus()
-          return
-        }
-        if (index < focusable.length - 2) {
-          const indexNewFocus =
-            index + 7 >= focusable.length - 1 ? focusable.length - 2 : index + 7
-          focusable[indexNewFocus].focus()
-        } else {
-          const allFocusableElements = document.querySelectorAll(
-            '[tabindex], input:not(.hidden-input), button:not(:disabled)'
-          )
-          const allFocusable = [...allFocusableElements] as HTMLElement[]
-          const index = allFocusable.indexOf(focusable[focusable.length - 1])
-          allFocusable[index + 1].focus()
-          openOrCloseDatePicker(e)
-        }
-
-        return
-      }
+      return
     }
+
+    if (e.key === 'ArrowLeft' && isPreviousElementInParentElement) {
+      previousElement?.focus()
+      return
+    }
+
+    if (e.key === 'ArrowRight' && isNextElementInParentElement) {
+      nextElement?.focus()
+      return
+    }
+
+    if (e.key === 'ArrowUp') {
+      const allFocusElementsInParentElement = focusable.filter((element) =>
+        element.closest('.picker-wrapper')
+      )
+      const indexInParentElement = allFocusElementsInParentElement.indexOf(
+        e.target
+      )
+
+      if (e.target.id === 'day') {
+        allFocusElementsInParentElement[
+          indexInParentElement - 7 < 0 ? 0 : indexInParentElement - 7
+        ].focus()
+      }
+
+      if (
+        e.target.id === 'picker-body-today-button' ||
+        e.target.id === 'picker-body-erase-button'
+      ) {
+        const days = allFocusElementsInParentElement.filter((element) =>
+          element.getAttribute('data-day')
+        )
+        const lastDay = days[days.length - 1]
+        lastDay.focus()
+      }
+
+      if (e.target.closest('.picker-header')) {
+        focusable[
+          focusable.indexOf(allFocusElementsInParentElement[0]) - 1
+        ].focus()
+        closeDatePicker()
+      }
+      return
+    }
+
+    if (e.key === 'ArrowDown') {
+      const allFocusElementsInParentElement = focusable.filter((element) =>
+        element.closest('.picker-wrapper')
+      )
+      const indexInParentElement = allFocusElementsInParentElement.indexOf(
+        e.target
+      )
+      const length = allFocusElementsInParentElement.length - 1
+
+      if (e.target.id === 'day') {
+        allFocusElementsInParentElement[
+          indexInParentElement + 7 > length
+            ? length - 1
+            : indexInParentElement + 7
+        ].focus()
+      }
+
+      if (
+        e.target.id === 'picker-body-today-button' ||
+        e.target.id === 'picker-body-erase-button'
+      ) {
+        focusable[
+          focusable.indexOf(allFocusElementsInParentElement[length]) + 1
+        ].focus()
+        closeDatePicker()
+      }
+
+      if (e.target.closest('.picker-header')) {
+        const firstDay = allFocusElementsInParentElement.find(
+          (element) => element.getAttribute('data-day') === '1'
+        )
+        firstDay?.focus()
+      }
+      return
+    }
+
     if (e.key === 'Enter') {
       if (e.target.className === 'picker-header-months') {
         setShowSelectMonth(!showSelectMonth)
-        return
       }
       if (e.target.id === 'day') {
         handleSelection(e)
-        return
       }
       if (e.target.id === 'picker-header-previous-button') {
         previousMonth(e)
-        return
       }
       if (e.target.id === 'picker-header-next-button') {
         nextMonth(e)
-        return
       }
       if (e.target.id === 'picker-body-today-button') {
         setTodayDate(e)
-        return
       }
       if (e.target.id === 'picker-body-erase-button') {
         eraseDate(e)
-        return
       }
+      return
     }
   }
 
@@ -286,7 +319,10 @@ export const DatePicker = ({
   }
 
   return (
-    <div className="date-picker" ref={ref}>
+    <div
+      className="date-picker"
+      ref={ref as LegacyRef<HTMLDivElement> | undefined}
+    >
       <InputDate
         validDate={selectedDate}
         setValidDate={setSelectedDate}
@@ -313,7 +349,7 @@ export const DatePicker = ({
 
       {showDatePicker && (
         <div
-          className="picker-wrapper show-picker"
+          className="picker-wrapper"
           onKeyDown={keyPressBehavior}
           onClick={clickPressBehavior}
         >
@@ -342,9 +378,8 @@ export const DatePicker = ({
               <p>
                 {monthNames[currentMonth]} {currentYear}
               </p>
-              <img
-                src={arrow}
-                alt="choose-month-button"
+              <FontAwesomeIcon
+                icon={faChevronDown}
                 className="choose-month-button"
               />
             </button>
@@ -353,11 +388,14 @@ export const DatePicker = ({
                 <button
                   id="picker-header-previous-button"
                   onClick={previousMonth}
-                  disabled={minDate && minDate?.getTime() > getTimeFromState(1)}
+                  disabled={
+                    minDate &&
+                    minDate?.getTime() >
+                      getTimeFromState(currentYear, currentMonth, 1)
+                  }
                 >
-                  <img
-                    src={arrow}
-                    alt="chevron-back-outline"
+                  <FontAwesomeIcon
+                    icon={faChevronDown}
                     className="chevron-back-outline"
                   />
                 </button>
@@ -368,14 +406,15 @@ export const DatePicker = ({
                     maxDate &&
                     maxDate?.getTime() <
                       getTimeFromState(
+                        currentYear,
+                        currentMonth,
                         getNumberOfDaysInMonth(currentYear, currentMonth)
                       )
                   }
                 >
-                  <img
-                    src={arrow}
+                  <FontAwesomeIcon
+                    icon={faChevronDown}
                     className="chevron-forward-outline"
-                    alt="chevron-forward-outline"
                   />
                 </button>
               </div>
@@ -397,8 +436,12 @@ export const DatePicker = ({
                   id="day"
                   data-day={day}
                   disabled={
-                    (minDate && minDate?.getTime() > getTimeFromState(day)) ||
-                    (maxDate && maxDate?.getTime() < getTimeFromState(day))
+                    (minDate &&
+                      minDate?.getTime() >
+                        getTimeFromState(currentYear, currentMonth, day)) ||
+                    (maxDate &&
+                      maxDate?.getTime() <
+                        getTimeFromState(currentYear, currentMonth, day))
                   }
                   className={`${
                     selectedDate?.getTime() ===

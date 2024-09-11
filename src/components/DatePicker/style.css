@@ -3,7 +3,10 @@
   & *:focus {
     outline: 4px auto blue;
     color: blue;
-  
+    & img {
+      filter: brightness(0.9) invert(0.7) sepia(1) hue-rotate(100deg)
+        saturate(200%);
+    }
   }
 }
 
@@ -63,24 +66,16 @@
 
 .picker-wrapper {
   background-color: white;
-  display: none;
   border: 1px solid black;
   border-radius: 7px;
+  z-index: 1;
   min-width: 400px;
   padding: 10px;
   position: absolute;
-  opacity: 0;
-  z-index: 0;
   & button {
     border: none;
     outline: none;
   }
-}
-
-.show-picker {
-  display: unset;
-  z-index: 1;
-  opacity: 1;
 }
 
 /* Input */

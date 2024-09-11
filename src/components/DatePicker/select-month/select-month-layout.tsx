@@ -74,7 +74,14 @@ export const SelectMonth = ({
     const focusable = [...allFocusableParentElements] as HTMLElement[]
     const index = focusable.indexOf(e.target)
     if (e.key === 'Enter') {
-      clickOnYear(e, Number(e.target.getAttribute('data-year')))
+      if (e.target.className === 'select-year-header') {
+        clickOnYear(e, Number(e.target.getAttribute('data-year')))
+      }
+      if (e.target.className.trim() === 'select-month-button') {
+        const indexMonth = e.target.getAttribute('data-month')
+        const year = e.target.getAttribute('data-year')
+        selectAMonth({ indexMonth, year })
+      }
       return
     }
 
@@ -139,14 +146,22 @@ export const SelectMonth = ({
       return
     }
 
-    if (e.key === 'Tab') {
-      if (e.shiftKey) {
+    if (e.key === 'Tab' && e.shiftKey) {
+      if (index > 0) {
         focusable[index - 1]?.focus()
       } else {
-        focusable[index + 1]?.focus()
+        setShowSelectMonth(false)
       }
+      return
     }
-    return
+    if (e.key === 'Tab') {
+      if (index < focusable.length - 1) {
+        focusable[index + 1]?.focus()
+      } else {
+        setShowSelectMonth(false)
+      }
+      return
+    }
   }
 
   return (
@@ -192,6 +207,8 @@ export const SelectMonth = ({
                           : ''
                       }
                     `}
+                    data-month={indexMonth}
+                    data-year={year}
                     disabled={isDisabled(
                       minDate,
                       maxDate,

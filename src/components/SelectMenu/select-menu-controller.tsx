@@ -58,70 +58,65 @@ function SelectMenu({ optionsProps, type, value }: TSelectMenu) {
 
   const selectAnOption = ({ option }: { option: string }) => {
     setSelectedItem(option)
+    closeSelectMenu()
+  }
+
+  const openOrCloseSelectMenu = () => {
+    if (activeMenu) {
+      closeSelectMenu()
+    } else {
+      setActiveMenu(true)
+    }
+  }
+
+  const closeSelectMenu = () => {
     setActiveMenu(false)
     setOptions(options)
   }
 
-  const openOrCloseSelectMenu = () => {
-    setActiveMenu(!activeMenu)
-    setOptions(options)
-  }
-
   const keyDownBehavior = (e: any) => {
+    if (
+      e.target.type === 'search' &&
+      e.key !== 'Tab' &&
+      e.key !== 'ArrowUp' &&
+      e.key !== 'ArrowDown' &&
+      e.key !== 'Enter'
+    )
+      return
     e.preventDefault()
+    const focusable = [
+      ...document.querySelectorAll(
+        '[tabindex], input:not(.hidden-input), button:not(:disabled)'
+      ),
+    ] as HTMLElement[]
+    const index = focusable.indexOf(e.target)
 
-    if (e.target.className === 'selectMenuHeader') {
-      if (e.key === 'Enter') {
-        openOrCloseSelectMenu()
-        return
-      }
-      if (e.key === 'Tab') {
-        const allFocusableElements = document.querySelectorAll(
-          '[tabindex], input:not(.hidden-input), button:not(:disabled)'
-        )
-        const allFocusable = [...allFocusableElements] as HTMLElement[]
-        const indexAllFocusable = allFocusable.indexOf(e.target)
-        if (e.shiftKey) {
-          allFocusable[indexAllFocusable - 1].focus()
-        } else {
-          allFocusable[indexAllFocusable + 1].focus()
-        }
-        if (activeMenu) setActiveMenu(false)
-
-        return
-      }
+    if (e.target.className === 'selectMenuHeader' && e.key === 'Enter') {
+      openOrCloseSelectMenu()
+      return
     }
 
-    if (activeMenu) {
-      const parentElement = e.target.closest('.selectMenu')
-      const allFocusableParentElements = parentElement.querySelectorAll(
-        '[tabindex], input:not(.hidden-input), button:not(:disabled)'
-      )
-      const focusable = [...allFocusableParentElements] as HTMLElement[]
-      const index = focusable.indexOf(e.target)
-      if (e.key === 'ArrowDown') {
-        if (index === focusable.length - 1) {
-          const allFocusableElements = document.querySelectorAll(
-            '[tabindex], input:not(.hidden-input), button:not(:disabled)'
-          )
-          const allFocusable = [...allFocusableElements] as HTMLElement[]
-          const indexAllFocusable = allFocusable.indexOf(e.target)
-          allFocusable[indexAllFocusable + 1].focus()
-          setActiveMenu(false)
-        } else {
-          focusable[index + 1]?.focus()
-        }
-        return
+    if (e.key === 'ArrowUp' || (e.key === 'Tab' && e.shiftKey)) {
+      const prevElement = focusable[index - 1]
+      if (!prevElement.closest('.selectMenu') && activeMenu) {
+        closeSelectMenu()
       }
-      if (e.key === 'ArrowUp') {
-        if (index === 1) {
-          focusable[index - 1].focus()
-          setActiveMenu(false)
-          return
-        }
-        focusable[index - 1]?.focus()
-        return
+      prevElement?.focus()
+      return
+    }
+
+    if (e.key === 'ArrowDown' || (e.key === 'Tab' && !e.shiftKey)) {
+      const nextElement = focusable[index + 1]
+      if (!nextElement.closest('.selectMenu') && activeMenu) {
+        closeSelectMenu()
       }
+      nextElement?.focus()
+      return
+    }
+
+    if (e.key === 'Enter' && e.target.className === 'option') {
+      const option = e.target.getAttribute('data-option')
+      selectAnOption({ option })
     }
   }
 

@@ -4,6 +4,7 @@ import {
 } from './select-menu-controller'
 import arrow from '../../assets/arrow.png'
 import './style.css'
+import { LegacyRef } from 'react'
 
 type TSelectMenuView = {
   activeMenu: boolean
@@ -29,14 +30,21 @@ export const SelectMenuView = ({
   handleClickOutside,
 }: TSelectMenuView) => {
   const ref = useOutsideClick(handleClickOutside)
-
   return (
-    <div className={`selectMenu ${activeMenu ? 'activeMenu' : ''}`} ref={ref} onKeyDown={keyDownBehavior}
->
+    <div
+      className={`selectMenu ${activeMenu ? 'activeMenu' : ''}`}
+      ref={ref as LegacyRef<HTMLDivElement> | undefined}
+      onKeyDown={keyDownBehavior}
+    >
       <div
         className="selectMenuHeader"
         onClick={openOrCloseSelectMenu}
         tabIndex={0}
+        aria-label={`Click for ${
+          activeMenu ? 'closing' : 'opening'
+        }the ${type} pop up menu`}
+        aria-haspopup={!activeMenu}
+        aria-expanded={activeMenu}
       >
         {selectedItem !== null ? (
           <p className="selectedItem" id={type}>
@@ -66,7 +74,11 @@ export const SelectMenuView = ({
         <div className={`${activeMenu ? 'activeMenuOptions' : ''}`}>
           <div className="searchSelectMenu">
             <p>Search :</p>
-            <input type="search" onInput={filteredData} />
+            <input
+              type="search"
+              onInput={filteredData}
+              aria-label={`Search input of the differents ${type} options`}
+            />
           </div>
           <div className="allOptions">
             {options.length <= 0 ? (
@@ -76,8 +88,10 @@ export const SelectMenuView = ({
                 <li
                   className="option"
                   key={`${option.abbreviation}-${index}`}
+                  data-option={option.name}
                   onClick={() => selectAnOption({ option: option.name })}
                   tabIndex={0}
+                  aria-label={option.name}
                 >
                   {option.name}
                 </li>
