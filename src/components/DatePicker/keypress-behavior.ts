@@ -2,8 +2,15 @@ export enum BehaviorType {
   InvalidData = 'INVALID_DATA',
   ArrowRight = 'ARROW_RIGHT',
   ArrowLeft = 'ARROW_LEFT',
+  ArrowUp = 'ARROW_UP',
+  ArrowDown = 'ARROW_DOWN',
   Tab = 'TAB',
   TabShift = 'TAB_SHIFT',
+  Escape = 'ESCAPE',
+  IncreaseValue = 'INVREASE_VALUE',
+  DecreaseValue = 'DECREASE_VALUE',
+  SetMinimumValue = 'SET_MINIMUM_VALUE',
+  SetMaximumValue = 'SET_MAXIMUM_VALUE',
   TabAndCloseElement = 'TAB_AND_CLOSE_ELEMENT',
   TabShiftAndCloseElement = 'TAB_SHIFT_AND_CLOSE_ELEMENT',
   ArrowUpWhenNoData = 'ARROW_UP_WHEN_NO_DATA',
@@ -12,67 +19,32 @@ export enum BehaviorType {
   AddValidDataWhenNoDataThenFocusNextElement = 'ADD_VALID_DATA_WHEN_NO_DATA_THEN_FOCUS_NEXT_ELEMENT',
   AddValidDataWhenData = 'ADD_VALID_DATA_WHEN_DATA',
   AddValidDataWhenDataThenFocusNextElement = 'ADD_VALID_DATA_WHEN_DATA_THEN_FOCUS_NEXT_ELEMENT',
-  ArrowUp = 'ARROW_UP',
-  ArrowDown = 'ARROW_DOWN',
   Enter = 'ENTER',
   OpenOrCloseDatePicker = 'OPEN_OR_CLOSE_DATE_PICKER',
   Delete = 'DELETE',
 }
 
-export type Behavior =
-  | {
-      type: BehaviorType.ArrowLeft
-    }
-  | { type: BehaviorType.ArrowRight }
-  | { type: BehaviorType.Tab }
-  | { type: BehaviorType.TabShift }
-  | {
-      type: BehaviorType.ArrowUp
-    }
-  | {
-      type: BehaviorType.ArrowDown
-    }
-  | {
-      type: BehaviorType.ArrowUpWhenNoData
-    }
-  | {
-      type: BehaviorType.ArrowDownWhenNoData
-    }
-  | {
-      type: BehaviorType.AddValidDataWhenData
-      value: number
-    }
-  | {
-      type: BehaviorType.AddValidDataWhenNoData
-    }
-  | {
-      type: BehaviorType.AddValidDataWhenDataThenFocusNextElement
-      value: number
-    }
-  | {
-      type: BehaviorType.AddValidDataWhenNoDataThenFocusNextElement
-    }
-  | {
-      type: BehaviorType.Delete
-    }
-  | { type: BehaviorType.Enter }
-  | {
-      type: BehaviorType.OpenOrCloseDatePicker
-    }
-  | {
-      type: BehaviorType.InvalidData
-    }
+type TGlobalBehavior = { type: Exclude<BehaviorType, BehaviorType.AddValidDataWhenData | BehaviorType.AddValidDataWhenDataThenFocusNextElement> }
+type TBehaviorWithValue = {
+  type:
+    | BehaviorType.AddValidDataWhenDataThenFocusNextElement
+    | BehaviorType.AddValidDataWhenData
+  value: number
+}
+type Behavior = TGlobalBehavior | TBehaviorWithValue
 
 type KeyPressBehaviorType = {
   shiftKey?: boolean
   keyPress: string
   nextElement?: boolean
   prevElement?: boolean
+  parentElement?: boolean
   isButtonFocus?: boolean
   isItAnInputKeyPress?: boolean
   dataValue?: number
   maxValue?: number
 }
+
 
 export const KeyPressBehavior = ({
   shiftKey,
