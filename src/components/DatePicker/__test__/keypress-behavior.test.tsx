@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vitest'
-import { BehaviorType, KeyPressBehavior } from '../../keypress-behavior'
+import { BehaviorType, KeyPressBehavior } from '../keypress-behavior'
 
 describe('Input date keypress behavior', () => {
   test('It should return an Invalid Data behavior', () => {

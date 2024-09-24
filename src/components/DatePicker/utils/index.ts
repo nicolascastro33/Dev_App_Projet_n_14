@@ -1,5 +1,5 @@
 import { dayNames } from '../consts'
-import { TSelectedDate } from '../input-date/input-date-layout'
+import { TSelectedDate } from '../components/input-date/input-date.types'
 
 export const getNumberOfDaysInMonth = (year: number, month: number) => {
   return new Date(year, month + 1, 0).getDate()
@@ -89,6 +89,20 @@ export const isSelectedDateValid = (selectedDate: TSelectedDate) => {
   return isNaN(date.getTime()) ? undefined : date
 }
 
+export const inputDateWrapperCssSelector = (
+  date: Date | undefined,
+  minDate: Date | undefined,
+  maxDate: Date | undefined
+) => {
+  if (date) {
+    if (date.getTime() < minDate!.getTime()) return 'invalid-date'
+    if (date.getTime() > maxDate!.getTime()) return 'invalid-date'
+    return 'valid-date'
+  } else {
+    return ''
+  }
+}
+
 export const getTimeFromState = (year: number, month: number, day: number) => {
   return new Date(year, month, day).getTime()
 }
@@ -97,9 +111,10 @@ export const isNewElementInParentElement = ({
   newElement,
   parentElementClassName,
 }: {
-  newElement: HTMLElement
+  newElement: HTMLElement | undefined
   parentElementClassName: string
 }) => {
+  if (!newElement) return false
   return newElement.closest(`.${parentElementClassName}`) ? true : false
 }
 
@@ -114,7 +129,6 @@ export const focusNextElementFromOutsideTheParentElement = ({
     allFocusableElementsOfTheDocument.filter((element) =>
       element.closest(`#${parentElementClassName}`)
     )
-    console.log(allFocusElementsInParentElement)
   const lastElement =
     allFocusElementsInParentElement[allFocusElementsInParentElement.length - 1]
 

@@ -1,6 +1,6 @@
 import SelectMenu from '../../components/SelectMenu/select-menu-controller'
 import { departments } from '../../data/department-options'
-import { DatePicker } from '../../components/DatePicker'
+import { DatePicker } from '../../components/DatePicker/date-picker.controller'
 import { Loader, LoaderWrapper } from '../../utils/loader'
 import { AutoCompleteAdressForm } from '../../components/AutoCompleteAdressForm'
 

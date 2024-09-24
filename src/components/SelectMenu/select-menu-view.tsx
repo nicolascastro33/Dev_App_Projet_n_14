@@ -1,10 +1,8 @@
-import {
-  SelectMenuOptionsType,
-  useOutsideClick,
-} from './select-menu-controller'
+import { SelectMenuOptionsType } from './select-menu-controller'
 import arrow from '../../assets/arrow.png'
 import './style.css'
 import { LegacyRef } from 'react'
+import { useOutsideClick } from './utils/use-outside-click'
 
 type TSelectMenuView = {
   activeMenu: boolean

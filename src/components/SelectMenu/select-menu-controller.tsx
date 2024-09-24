@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { SelectMenuView } from './select-menu-view'
 
 type TSelectMenu = {
@@ -12,21 +12,6 @@ export type SelectMenuOptionsType = {
   abbreviation: string
 }[]
 
-export const useOutsideClick = (callback: () => void) => {
-  const ref = useRef<HTMLElement | undefined>()
-  useEffect(() => {
-    const handleClick = (event: any) => {
-      if (ref.current && !ref.current.contains(event.target)) {
-        callback()
-      }
-    }
-    document.addEventListener('click', handleClick)
-    return () => {
-      document.removeEventListener('click', handleClick)
-    }
-  }, [ref])
-  return ref
-}
 
 function SelectMenu({ optionsProps, type, value }: TSelectMenu) {
   const [selectedItem, setSelectedItem] = useState<null | string>(

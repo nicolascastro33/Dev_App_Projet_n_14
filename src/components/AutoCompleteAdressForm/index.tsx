@@ -23,16 +23,16 @@ export class AutoCompleteAdressForm
     this.inputRef = React.createRef()
   }
 
-  componentDidMount(): void {
-    this.autocomplete = new google.maps.places.Autocomplete(
-      this.inputRef.current,
-      {
-        types: ['geocode'],
-        componentRestrictions: { country: 'US' },
-      }
-    )
-    this.autocomplete.addListener('place_changed', this.handlePlaceSelect)
-  }
+  // componentDidMount(): void {
+  //   this.autocomplete = new google.maps.places.Autocomplete(
+  //     this.inputRef.current,
+  //     {
+  //       types: ['geocode'],
+  //       componentRestrictions: { country: 'US' },
+  //     }
+  //   )
+  //   this.autocomplete.addListener('place_changed', this.handlePlaceSelect)
+  // }
 
   initialState(): TInitialState {
     return {

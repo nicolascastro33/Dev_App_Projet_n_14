@@ -38,7 +38,13 @@ export const InputDateKeyPressBehavior = ({
     if (isButtonFocus) {
       return { type: InputDateBehavior.OpenOrCloseDatePicker }
     }
-    return { type: InputDateBehavior.Enter }
+    if (
+      nextElement?.className === 'input-date' ||
+      nextElement?.className === 'input-date-button'
+    ) {
+      return { type: InputDateBehavior.FocusNextElement }
+    }
+    return { type: InputDateBehavior.InvalidData }
   }
   if (dataValue) {
     if (keyPress === 'ArrowUp') {
