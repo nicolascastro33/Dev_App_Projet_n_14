@@ -33,6 +33,8 @@ export const SelectMonthLayout = ({
                 onClick={(e) => {
                   clickOnYear(e, year)
                 }}
+                aria-haspopup={yearOpen !== year && !isOpen}
+                aria-expanded={yearOpen === year && isOpen}
               >
                 <p>{year}</p>
               </div>
@@ -46,6 +48,7 @@ export const SelectMonthLayout = ({
                 {monthNames.map((month, indexMonth) => (
                   <button
                     key={`${year}-${month}-${indexMonth}`}
+                    aria-label={`select ${month}-${year}`}
                     className={`select-month-button
                       ${
                         monthNames[currentMonth] === month &&

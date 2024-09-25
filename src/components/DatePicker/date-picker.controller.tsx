@@ -21,7 +21,7 @@ export const DatePicker = ({
     new Date().getFullYear()
   )
   const pickerHeaderMonthId = useId()
-  const [selectedDate, setSelectedDate] = useState<undefined | Date>(undefined)
+  const [selectedDate, setSelectedDate] = useState<undefined | Date>()
 
   useEffect(() => {
     if (selectedDate) {
@@ -52,11 +52,6 @@ export const DatePicker = ({
       if (pickerHeaderMonth) pickerHeaderMonth.focus()
     }
   }, [showSelectMonth])
-
-  const handleClickOutside = () => {
-    setShowDatePicker(false)
-    setShowSelectMonth(false)
-  }
 
   const closeDatePicker = () => {
     setShowDatePicker(false)
@@ -141,7 +136,7 @@ export const DatePicker = ({
 
   return (
     <DatePickerLayout
-      handleClickOutside={handleClickOutside}
+      handleClickOutside={closeDatePicker}
       selectedDate={selectedDate}
       setSelectedDate={setSelectedDate}
       setCurrentMonth={setCurrentMonth}

@@ -10,7 +10,7 @@ type TSelectMenuView = {
   options: SelectMenuOptionsType
   type: string
   filteredData: (e: any) => void
-  selectAnOption: ({ option }: { option: string }) => void
+  selectAnOption: (option: string) => void
   openOrCloseSelectMenu: () => void
   keyDownBehavior: (e: any) => void
   handleClickOutside: () => void
@@ -87,7 +87,7 @@ export const SelectMenuView = ({
                   className="option"
                   key={`${option.abbreviation}-${index}`}
                   data-option={option.name}
-                  onClick={() => selectAnOption({ option: option.name })}
+                  onClick={() => selectAnOption(option.name)}
                   tabIndex={0}
                   aria-label={option.name}
                 >

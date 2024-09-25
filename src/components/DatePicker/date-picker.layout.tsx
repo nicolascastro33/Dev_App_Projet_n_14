@@ -93,6 +93,7 @@ export const DatePickerLayout = ({
           <div className="picker-header">
             <button
               className="picker-header-months"
+              aria-label="select month button"
               onClick={(e) => {
                 e.preventDefault()
                 setShowSelectMonth(!showSelectMonth)
@@ -111,6 +112,7 @@ export const DatePickerLayout = ({
               <div className="picker-header-buttons">
                 <button
                   id="picker-header-previous-button"
+                  aria-label="previous month button"
                   onClick={previousMonth}
                   disabled={
                     minDate &&
@@ -125,6 +127,7 @@ export const DatePickerLayout = ({
                 </button>
                 <button
                   id="picker-header-next-button"
+                  aria-label="next month button"
                   onClick={nextMonth}
                   disabled={
                     maxDate &&
@@ -158,6 +161,7 @@ export const DatePickerLayout = ({
                 <button
                   key={`${day}-${index}`}
                   id="day"
+                  aria-label={`select ${day}/${currentMonth}/${currentYear} `}
                   data-day={day}
                   disabled={
                     (minDate &&
@@ -187,10 +191,18 @@ export const DatePickerLayout = ({
               ))}
             </div>
             <div className="picker-body-buttons">
-              <button id="picker-body-today-button" onClick={setTodayDate}>
+              <button
+                id="picker-body-today-button"
+                onClick={setTodayDate}
+                aria-label="select today"
+              >
                 Today
               </button>
-              <button id="picker-body-erase-button" onClick={eraseDate}>
+              <button
+                id="picker-body-erase-button"
+                onClick={eraseDate}
+                aria-label="erase date"
+              >
                 Erase
               </button>
             </div>

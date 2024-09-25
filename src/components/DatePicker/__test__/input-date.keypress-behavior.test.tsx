@@ -1,5 +1,7 @@
 import { describe, test, expect } from 'vitest'
-import { InputDateBehavior as BehaviorType, KeyPressBehavior } from '../keypress-behavior/keypress-behavior-types'
+import { InputDateKeyPressBehavior as KeyPressBehavior } from '../keypress-behavior/input-date-keypress'
+import { InputDateBehavior as BehaviorType } from '../keypress-behavior/keypress-behavior-types'
+import { render, screen } from '@testing-library/react'
 
 describe.skip('Input date keypress behavior', () => {
   test('It should return an Invalid Data behavior', () => {
@@ -13,24 +15,29 @@ describe.skip('Input date keypress behavior', () => {
   })
 
   test('It should return an Arrow right behavior', async () => {
+    render(<p>Next Element</p>)
+    const nextElement = (await screen.queryByText(
+      'Next Element'
+    )) as HTMLElement
     const keyPressBehavior = KeyPressBehavior({
       keyPress: 'ArrowRight',
       dataValue: undefined,
-      nextElement: true,
+      nextElement, 
     })
     expect(keyPressBehavior).toStrictEqual({
-      type: BehaviorType.ArrowRight,
+      type: BehaviorType.FocusNextElement,
     })
-  })
+  }) 
 
   test('It should return an Arrow left behavior', async () => {
+    const prevElement = document.createElement('div')
     const keyPressBehavior = KeyPressBehavior({
       keyPress: 'ArrowLeft',
       dataValue: undefined,
-      prevElement: true,
+      prevElement,
     })
     expect(keyPressBehavior).toStrictEqual({
-      type: BehaviorType.ArrowLeft,
+      type: BehaviorType.FocusPreviousElement,
     })
   })
 
