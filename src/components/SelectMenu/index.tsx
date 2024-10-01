@@ -1,42 +1,52 @@
-import { SelectMenuOptionsType } from './select-menu-controller'
+import { LegacyRef } from 'react'
+import { SelectMenuKeyPress } from './keypress/select-menu-keypress.controller'
 import arrow from '../../assets/arrow.png'
 import './style.css'
-import { LegacyRef } from 'react'
-import { useOutsideClick } from './utils/use-outside-click'
+import { useSelectMenu } from './select-menu.hook'
 
-type TSelectMenuView = {
-  activeMenu: boolean
-  selectedItem: null | string
-  options: SelectMenuOptionsType
+export type TSelectMenu = {
+  optionsProps: SelectMenuOptionsType
   type: string
-  filteredData: (e: any) => void
-  selectAnOption: (option: string) => void
-  openOrCloseSelectMenu: () => void
-  keyDownBehavior: (e: any) => void
-  handleClickOutside: () => void
+  value?: string
 }
 
-export const SelectMenuView = ({
-  activeMenu,
-  selectedItem,
-  options,
-  type,
-  filteredData,
-  selectAnOption,
-  openOrCloseSelectMenu,
-  keyDownBehavior,
-  handleClickOutside,
-}: TSelectMenuView) => {
-  const ref = useOutsideClick(handleClickOutside)
+export type SelectMenuOptionsType = {
+  name: string
+  abbreviation: string
+}[]
+
+function SelectMenu({ optionsProps, type, value }: TSelectMenu) {
+  const {
+    activeMenu,
+    ref,
+    selectOption,
+    toggle,
+    close,
+    selectedItem,
+    filteredData,
+    options,
+  } = useSelectMenu({
+    optionsProps,
+    value,
+  })
+
   return (
     <div
       className={`selectMenu ${activeMenu ? 'activeMenu' : ''}`}
       ref={ref as LegacyRef<HTMLDivElement> | undefined}
-      onKeyDown={keyDownBehavior}
+      onKeyDown={(e) =>
+        SelectMenuKeyPress({
+          e,
+          selectOption,
+          openOrCloseSelectMenu: toggle,
+          activeMenu,
+          closeSelectMenu: close,
+        })
+      }
     >
       <div
         className="selectMenuHeader"
-        onClick={openOrCloseSelectMenu}
+        onClick={toggle}
         tabIndex={0}
         aria-label={`Click for ${
           activeMenu ? 'closing' : 'opening'
@@ -87,7 +97,7 @@ export const SelectMenuView = ({
                   className="option"
                   key={`${option.abbreviation}-${index}`}
                   data-option={option.name}
-                  onClick={() => selectAnOption(option.name)}
+                  onClick={() => selectOption(option.name)}
                   tabIndex={0}
                   aria-label={option.name}
                 >
@@ -101,3 +111,5 @@ export const SelectMenuView = ({
     </div>
   )
 }
+
+export default SelectMenu

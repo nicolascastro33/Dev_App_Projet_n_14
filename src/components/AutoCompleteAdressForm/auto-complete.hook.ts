@@ -1,5 +1,11 @@
 import { PropsWithChildren, useRef, useState } from 'react'
-import { TInitialState } from './auto-complete-adress-form.gateway'
+
+type TInitialState = {
+  street: string
+  city: string
+  state: string
+  zipCode: string
+}
 
 interface Props extends PropsWithChildren<any> {
   delay?: number

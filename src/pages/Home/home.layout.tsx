@@ -1,8 +1,8 @@
-import SelectMenu from '../../components/SelectMenu/select-menu-controller'
+import SelectMenu from '../../components/SelectMenu'
 import { departments } from '../../data/department-options'
 import { DatePicker } from '../../components/DatePicker'
 import { Loader, LoaderWrapper } from '../../utils/loader'
-import AutoCompleteAddressForm from '../../components/AutoCompleteAdressForm/auto-complete'
+import AutoCompleteAddressForm from '../../components/AutoCompleteAdressForm'
 
 function HomeLayout({
   saveEmployee,
