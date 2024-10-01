@@ -1,5 +1,5 @@
-import { dayNames } from '../consts'
-import { TSelectedDate } from '../components/input-date/input-date.types'
+import { dayNames } from '../data/day&monthNames'
+import { TSelectedDate } from '../types/input-date.types'
 
 export const getNumberOfDaysInMonth = (year: number, month: number) => {
   return new Date(year, month + 1, 0).getDate()
@@ -12,7 +12,7 @@ export const getSortedDays = (year: number, month: number) => {
   return [...firstHalf, ...dayNames.slice(0, dayIndex)]
 }
 
-export const getDayWithoutHour = () => {
+export const getDayWithoutHour = (): Date => {
   const date = new Date()
   return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0)
 }

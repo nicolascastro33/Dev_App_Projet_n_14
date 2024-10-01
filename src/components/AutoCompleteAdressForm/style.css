@@ -1,0 +1,25 @@
+.autocomplete-wrapper {
+  position: relative;
+}
+
+.autocomplete-locations {
+  display: block;
+  z-index: 1;
+  position: absolute;
+  width: 70%;
+  border-radius: 5px;
+  border: 1px solid black;
+  background-color: rgb(240, 237, 237);
+  overflow: scroll;
+  max-height: 150px;
+  &::-webkit-scrollbar {
+    width: 0;
+    background-color: transparent;
+    height: 0;
+  }
+}
+
+.autocomplete-location {
+  padding: 5px 10px;
+  list-style-type: none;
+}

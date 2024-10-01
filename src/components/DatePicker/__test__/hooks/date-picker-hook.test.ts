@@ -1,6 +1,7 @@
 import { describe, assert, it } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
-import { useDatePicker } from '../date-picker.hook'
+import { useDatePicker } from '../../hooks/date-picker.hook'
+import { getDayWithoutHour } from '../../utils'
 
 describe('Date Picker hook', () => {
   it('Should be closed by default', () => {
@@ -63,5 +64,48 @@ describe('Date Picker hook', () => {
     const { result } = renderHook(() => useDatePicker({ opened: true }))
     act(() => result.current.selectDate(new Date(2022, 1, 1)))
     assert.equal(result.current.isOpen, false)
+  })
+
+  it('should set next month', () => {
+    const { result } = renderHook(() => useDatePicker({ month: 2 }))
+    act(() => result.current.nextMonth())
+    assert.equal(result.current.month, 3)
+  })
+
+  it('should set next year with first month', () => {
+    const { result } = renderHook(() => useDatePicker({ month: 11, year: 2 }))
+    act(() => result.current.nextMonth())
+    assert.equal(result.current.month, 0)
+    assert.equal(result.current.year, 3)
+  })
+
+  it('should set previous month', () => {
+    const { result } = renderHook(() => useDatePicker({ month: 2 }))
+    act(() => result.current.prevMonth())
+    assert.equal(result.current.month, 1)
+  })
+
+  it('should set previous year with last month', () => {
+    const { result } = renderHook(() => useDatePicker({ month: 0, year: 2 }))
+    act(() => result.current.prevMonth())
+    assert.equal(result.current.month, 11)
+    assert.equal(result.current.year, 1)
+  })
+
+  it('should set the month and the year when a date is selected', () => {
+    const { result } = renderHook(() => useDatePicker({}))
+    act(() => result.current.selectDate(new Date(2022, 2, 2)))
+    assert.equal(result.current.month, 2)
+    assert.equal(result.current.year, 2022)
+  })
+
+  it('should set today date', () => {
+    const { result } = renderHook(() => useDatePicker({}))
+    const todayDate = getDayWithoutHour()
+    act(() => result.current.setTodayDate())
+    assert.equal(
+      result.current.selectedDate?.toISOString(),
+      todayDate.toISOString()
+    )
   })
 })

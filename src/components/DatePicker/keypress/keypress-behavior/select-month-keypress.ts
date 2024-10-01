@@ -1,4 +1,4 @@
-import { isNewElementInParentElement } from '../utils'
+import { isNewElementInParentElement } from '../../utils'
 import {
   SelectMonthBehavior,
   TSelectMonthBehavior,
@@ -13,6 +13,9 @@ export const SelectMonthKeyPressBehavior = ({
   prevElement,
   allFocusableElements,
 }: TSelectMonthPropsBehavior): TSelectMonthBehavior => {
+  if (!allFocusableElements || !eventTarget) {
+    return { type: SelectMonthBehavior.InvalidData }
+  }
   const index = allFocusableElements.indexOf(eventTarget)
   const isPreviousElementInSelectMonth = isNewElementInParentElement({
     newElement: prevElement,
@@ -70,7 +73,7 @@ export const SelectMonthKeyPressBehavior = ({
     if (eventTarget?.className === 'select-year-header') {
       return { type: SelectMonthBehavior.FocusNextElement }
     }
-    
+
     if (
       !isNewElementInParentElement({
         newElement: allFocusableElements[index + 4],

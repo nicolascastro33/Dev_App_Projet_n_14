@@ -1,4 +1,4 @@
-import { isNewElementInParentElement } from '../utils'
+import { isNewElementInParentElement } from '../../utils'
 import {
   DatePickerBehavior,
   TDatePickerBehavior,

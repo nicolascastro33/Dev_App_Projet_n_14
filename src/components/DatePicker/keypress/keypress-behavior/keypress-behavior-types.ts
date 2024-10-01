@@ -91,8 +91,8 @@ export type TDatePickerPropsBehavior = TGlobalPropsBehavior & {
 }
 
 export type TSelectMonthPropsBehavior = TGlobalPropsBehavior & {
-  eventTarget: HTMLElement
-  allFocusableElements: HTMLElement[]
+  eventTarget?: HTMLElement
+  allFocusableElements?: HTMLElement[]
 }
 
 export type TInputDatePropsBehavior = TGlobalPropsBehavior & {

@@ -1,31 +1,34 @@
+import { TInputDateProps } from '../types/input-date.types'
+import { InputDateKeyPress } from '../keypress/keypress-controller/input-date.keypress'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCalendar } from '@fortawesome/free-solid-svg-icons'
-import { TDate, TSelectedDate } from './input-date.types'
-import { inputDateWrapperCssSelector, numberOfZeroYearData } from '../../utils'
+import { inputDateWrapperCssSelector, numberOfZeroYearData } from '../utils'
+import { useInputDate } from '../hooks/input-date.hook'
 
-export type TInputDateLayout = {
-  settingOnKeyDown: (e: any) => void
-  settingOnClick: (e: any) => void
-  selectedDate: TSelectedDate
-  date: TDate
-  buttonId: string
-  openOrCloseDatePicker: () => void
-  minDate: Date | undefined
-  maxDate: Date | undefined
-  isValid: Date | undefined
-}
-
-export const InputDateLayout = ({
-  settingOnKeyDown,
-  settingOnClick,
-  selectedDate,
-  date,
-  buttonId,
+export const InputDate = ({
+  validDate,
+  setValidDate,
   openOrCloseDatePicker,
-  minDate,
   maxDate,
-  isValid,
-}: TInputDateLayout) => {
+  minDate,
+}: TInputDateProps) => {
+  const { date, selectedDate, setSelectedDate, buttonId, isValid } =
+    useInputDate({
+      validDate,
+      setValidDate,
+      maxYear: maxDate?.getFullYear(),
+      minYear: minDate?.getFullYear(),
+    })
+
+  const settingOnClick = (e: any) => {
+    e.preventDefault()
+    if (e.target.id) {
+      e.target.focus()
+    } else {
+      e.target.closest('p').firstChild.focus()
+    }
+  }
+
   return (
     <div
       className={`input-date-wrapper ${inputDateWrapperCssSelector(
@@ -33,7 +36,15 @@ export const InputDateLayout = ({
         minDate,
         maxDate
       )} `}
-      onKeyDown={settingOnKeyDown}
+      onKeyDown={(e: any) =>
+        InputDateKeyPress({
+          e,
+          selectedDate,
+          date,
+          setSelectedDate,
+          openOrCloseDatePicker,
+        })
+      }
     >
       <p onClick={settingOnClick}>
         <span

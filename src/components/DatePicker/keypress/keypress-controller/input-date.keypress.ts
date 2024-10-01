@@ -1,14 +1,14 @@
-import { InputDateKeyPressBehavior } from '../../keypress-behavior/input-date-keypress'
-import { InputDateBehavior } from '../../keypress-behavior/keypress-behavior-types'
-import { TInputDateKeyDownProps } from './input-date.types'
+import { InputDateKeyPressBehavior } from '../keypress-behavior/input-date-keypress'
+import { InputDateBehavior } from '../keypress-behavior/keypress-behavior-types'
+import { TInputDateKeyPressProps } from '../../types/input-date.types'
 
-export const InputDateKeyDown = ({
+export const InputDateKeyPress = ({
   e,
   selectedDate,
   date,
   openOrCloseDatePicker,
   setSelectedDate,
-}: TInputDateKeyDownProps) => {
+}: TInputDateKeyPressProps) => {
   e.preventDefault()
   const keyPress = e.key
   const target = e.target as HTMLTextAreaElement

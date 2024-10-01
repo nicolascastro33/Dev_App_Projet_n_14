@@ -1,24 +1,53 @@
-import { monthNames } from '../../consts'
-import { getAllYears, isDisabled } from '../../utils'
-import { TSelectMonthLayout } from './select-month.types'
+import { useEffect } from 'react'
+import { monthNames } from '../data/day&monthNames'
+import { getAllYears, isDisabled } from '../utils'
+import { TSelectMonthProps } from '../types/select-month.types'
+import { SelectMonthKeyDown } from '../keypress/keypress-controller/select-month.keydown'
+import { useSelectMonth } from '../hooks/select-month.hook'
 
-export const SelectMonthLayout = ({
-  minDate,
-  maxDate,
-  closeSelectMonth,
-  keyPressBehavior,
-  clickOnYear,
-  selectAMonth,
-  isOpen,
-  yearOpen,
+export const SelectMonth = ({
   currentMonth,
   currentYear,
-}: TSelectMonthLayout) => {
+  setCurrentMonth,
+  setCurrentYear,
+  setShowSelectMonth,
+  showSelectMonth,
+  maxDate,
+  minDate,
+}: TSelectMonthProps) => {
+  const { yearOpen, isOpen, clickOnYear } = useSelectMonth({
+    yearOpen: currentYear,
+  })
+
+  const closeSelectMonth = (e: any) => {
+    if (!e.target.closest('.select-month')) setShowSelectMonth(false)
+  }
+
+  useEffect(() => {
+    const yearComponent = document.querySelector(`#select-year-${yearOpen}`)
+    if (yearComponent) yearComponent.scrollIntoView({ behavior: 'smooth' })
+  }, [yearOpen])
+
+  const selectAMonth = (indexMonth: number, year: number) => {
+    setCurrentMonth(indexMonth)
+    setCurrentYear(year)
+    setShowSelectMonth(false)
+  }
+
   return (
     <div
       className="select-month-wrapper"
       onClick={closeSelectMonth}
-      onKeyDown={keyPressBehavior}
+      onKeyDown={(e: any) =>
+        SelectMonthKeyDown({
+          e,
+          showSelectMonth,
+          setShowSelectMonth,
+          yearOpen,
+          clickOnYear,
+          selectAMonth,
+        })
+      }
     >
       <div className="select-month">
         {getAllYears(minDate?.getFullYear(), maxDate?.getFullYear()).map(
@@ -30,9 +59,7 @@ export const SelectMonthLayout = ({
                 key={`year-${indexYear}-${year}`}
                 data-year={year}
                 tabIndex={0}
-                onClick={(e) => {
-                  clickOnYear(e, year)
-                }}
+                onClick={() => clickOnYear(year)}
                 aria-haspopup={yearOpen !== year && !isOpen}
                 aria-expanded={yearOpen === year && isOpen}
               >

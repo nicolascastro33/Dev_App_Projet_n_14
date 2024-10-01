@@ -1,5 +1,4 @@
 import { Dispatch, SetStateAction } from 'react'
-import { KeypressEvent } from '../../date-picker.types'
 
 export type TDate = {
   day: { name: string; maxValue: number; minValue: number }
@@ -29,8 +28,8 @@ export type TInputDateProps = {
   minDate: Date | undefined
 }
 
-export type TInputDateKeyDownProps = {
-  e: KeypressEvent
+export type TInputDateKeyPressProps = {
+  e: any
   selectedDate: TSelectedDate
   date: TDate
   openOrCloseDatePicker: (e: any) => void

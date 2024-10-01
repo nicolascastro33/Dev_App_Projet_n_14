@@ -1,18 +1,18 @@
-import { TDatePickerKeyDownProps } from './date-picker.types'
-import { DatePickerKeyPressBehavior } from './keypress-behavior/date-picker-keypress'
-import { DatePickerBehavior } from './keypress-behavior/keypress-behavior-types'
+import { TDatePickerKeyPressProps } from '../../types/date-picker.types'
+import { DatePickerKeyPressBehavior } from '../keypress-behavior/date-picker-keypress'
+import { DatePickerBehavior } from '../keypress-behavior/keypress-behavior-types'
 
-export const DatePickerKeyDown = ({
+export const DatePickerKeyPress = ({
   e,
   showSelectMonth,
   closeDatePicker,
   setShowSelectMonth,
   handleSelection,
-  previousMonth,
+  prevMonth,
   nextMonth,
   setTodayDate,
   eraseDate,
-}: TDatePickerKeyDownProps) => {
+}: TDatePickerKeyPressProps) => {
   if (showSelectMonth) return
   e.preventDefault()
   const allFocusableElements = document.querySelectorAll(
@@ -95,7 +95,7 @@ export const DatePickerKeyDown = ({
       handleSelection(e)
       return
     case DatePickerBehavior.SetPreviousMonth:
-      previousMonth(e)
+      prevMonth(e)
       return
     case DatePickerBehavior.SetNextMonth:
       nextMonth(e)

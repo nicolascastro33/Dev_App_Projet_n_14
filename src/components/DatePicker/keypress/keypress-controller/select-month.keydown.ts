@@ -1,6 +1,6 @@
-import { SelectMonthBehavior } from '../../keypress-behavior/keypress-behavior-types'
-import { SelectMonthKeyPressBehavior } from '../../keypress-behavior/select-month-keypress'
-import { TSelectMonthKeyDownProps } from './select-month.types'
+import { SelectMonthBehavior } from '../keypress-behavior/keypress-behavior-types'
+import { SelectMonthKeyPressBehavior } from '../keypress-behavior/select-month-keypress'
+import { TSelectMonthKeyDownProps } from '../../types/select-month.types'
 
 export const SelectMonthKeyDown = ({
   e,
@@ -39,7 +39,7 @@ export const SelectMonthKeyDown = ({
       setShowSelectMonth(false)
       return
     case SelectMonthBehavior.ClickOnYear:
-      clickOnYear(e, Number(e.target.getAttribute('data-year')))
+      clickOnYear(Number(e.target.getAttribute('data-year')))
       return
     case SelectMonthBehavior.SetMonth:
       const indexMonth = e.target.getAttribute('data-month')
