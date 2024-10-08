@@ -3,6 +3,7 @@ import { departments } from '../../data/department-options'
 import { DatePicker } from '../../components/DatePicker'
 import { Loader, LoaderWrapper } from '../../utils/loader'
 import AutoCompleteAddressForm from '../../components/AutoCompleteAdressForm'
+import AutoCompleteProvider from '../../autocomplete-provider'
 
 function HomeLayout({
   saveEmployee,
@@ -49,7 +50,10 @@ function HomeLayout({
             minDate={new Date('1980-01-01')}
             maxDate={new Date()}
           />
-          <AutoCompleteAddressForm />
+          <AutoCompleteProvider>
+            <AutoCompleteAddressForm />
+          </AutoCompleteProvider>
+
           <label htmlFor="department">Department</label>
           <SelectMenu type="department" optionsProps={departments} />
           <div className="buttonWrapper">

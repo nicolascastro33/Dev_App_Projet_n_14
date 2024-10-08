@@ -22,4 +22,7 @@
 .autocomplete-location {
   padding: 5px 10px;
   list-style-type: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }

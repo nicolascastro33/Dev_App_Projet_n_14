@@ -2,20 +2,16 @@ import SelectMenu from '../SelectMenu'
 import useAutoComplete from './auto-complete.hook'
 import { states } from '../../data/states-options'
 import './style.css'
-
-const OptionsFilter = (searchTerm: string) => {
-  const Options = [
-    { value: '1', label: 'John' },
-    { value: '2', label: 'Jack' },
-    { value: '3', label: 'Jane' },
-    { value: '4', label: 'Mike' },
-  ]
-  return Options.filter((option) =>
-    new RegExp(`^${searchTerm}`, 'i').test(option.label)
-  )
-}
+import { useContext } from 'react'
+import {
+  AutoCompleteContext,
+  TAutoCompleteContext,
+} from '../../autocomplete-provider'
 
 export default function AutoCompleteAddressForm() {
+  const { OptionsFilter } = useContext(
+    AutoCompleteContext
+  ) as TAutoCompleteContext
   const {
     bindInput,
     bindOtherInputs,
@@ -29,6 +25,7 @@ export default function AutoCompleteAddressForm() {
     onChange: (value) => console.log(value),
     source: (searchTerm) => OptionsFilter(searchTerm),
   })
+
   return (
     <fieldset className="address">
       <div className="autocomplete-wrapper">
@@ -41,9 +38,10 @@ export default function AutoCompleteAddressForm() {
           {...bindInput}
         />
 
-        {!isBusy && locations?.length > 1 && (
-          <ul className="autocomplete-locations" {...bindOptions}>
-            {locations.map((_, index) => (
+        <ul className="autocomplete-locations" {...bindOptions}>
+          {!isBusy &&
+            !!locations?.length &&
+            locations.map((location, index) => (
               <li
                 key={index}
                 tabIndex={0}
@@ -52,11 +50,10 @@ export default function AutoCompleteAddressForm() {
                 }`}
                 {...bindOption}
               >
-                {locations[index].label}
+                {location.display_name}
               </li>
             ))}
-          </ul>
-        )}
+        </ul>
       </div>
 
       <label htmlFor="street">Street</label>

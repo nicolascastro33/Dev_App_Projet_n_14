@@ -19,7 +19,7 @@ const defaultProps = {
 
 export default function useAutoComplete(props: Props = defaultProps) {
   const [myTimeout, setMyTimeOut] = useState(setTimeout(() => {}, 0))
-  const listRef = useRef<HTMLElement>()
+  const listRef = useRef<HTMLUListElement>()
   const [locations, setLocations] = useState<Array<any>>([])
   const [isBusy, setBusy] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState(-1)
@@ -43,20 +43,22 @@ export default function useAutoComplete(props: Props = defaultProps) {
       props.onChange(locations[index])
       setTextValue(locations[index].label)
       setAddress({
-        street: locations[index].label,
-        city: locations[index].label,
-        state: locations[index].label,
-        zipCode: locations[index].label,
+        street: locations[index].address.neighbourhood ?? '',
+        city: locations[index].address.city ?? '',
+        state: locations[index].address.state ?? '',
+        zipCode: locations[index].address.postCode ?? '',
       })
     }
     clearLocations()
   }
 
   async function getlocations(searchTerm: string) {
-    if (searchTerm && props.source) {
-      const options = await props.source(searchTerm)
-      setLocations(options)
+    if (!(searchTerm && props.source)) {
+      return
     }
+    const options: any[] | undefined = await props.source(searchTerm)
+    console.log(options)
+    if (options) setLocations(options)
   }
 
   function clearLocations() {

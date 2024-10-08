@@ -1,7 +1,6 @@
 import { PropsWithChildren, useEffect, useState } from 'react'
 import { getDayWithoutHour } from '../utils'
 
-
 interface Props extends PropsWithChildren<any> {
   opened?: boolean
   selectMonthOpened?: boolean
@@ -17,7 +16,29 @@ const defaultProps = {
   year: new Date().getFullYear(),
 }
 
-export function useDatePicker(props: Props = defaultProps) {
+export type TUseDatePicker = {
+  open: () => void
+  close: () => void
+  toggleOpen: () => void
+  openSelectMonth: () => void
+  closeSelectMonth: () => void
+  selectDate: (date: Date) => void
+  eraseDate: () => void
+  setTodayDate: () => void
+  nextMonth: () => void
+  prevMonth: () => void
+  setSelectedDate: React.Dispatch<React.SetStateAction<Date | undefined>>
+  selectedDate: Date | undefined
+  isOpen: boolean
+  showSelectMonth: boolean
+  setShowSelectMonth: React.Dispatch<React.SetStateAction<boolean>>
+  month: number
+  year: number
+  setMonth: React.Dispatch<React.SetStateAction<number>>
+  setYear: React.Dispatch<React.SetStateAction<number>>
+}
+
+export function useDatePicker(props: Props = defaultProps): TUseDatePicker {
   const [isOpen, setIsOpen] = useState<boolean>(props.opened!)
   const [showSelectMonth, setShowSelectMonth] = useState<boolean>(
     props.selectMonthOpened!
