@@ -1,4 +1,6 @@
 import { PropsWithChildren, useRef, useState } from 'react'
+import { useOutsideClick } from './utils/use-outside-click'
+import { AutoCompleteKeyPress } from './keypress/auto-complete-keypress.controller'
 
 type TInitialState = {
   street: string
@@ -38,15 +40,19 @@ export default function useAutoComplete(props: Props = defaultProps) {
     setMyTimeOut(setTimeout(cb, props.delay))
   }
 
-  function selectOption(index: number) {
+  function selectAddress(index: number) {
     if (index > -1 && props.onChange) {
       props.onChange(locations[index])
-      setTextValue(locations[index].label)
+      setTextValue(locations[index].display_name)
       setAddress({
-        street: locations[index].address.neighbourhood ?? '',
+        street:
+          locations[index].address.road ??
+          locations[index].address.neighbourhood ??
+          locations[index].address.county ??
+          '',
         city: locations[index].address.city ?? '',
         state: locations[index].address.state ?? '',
-        zipCode: locations[index].address.postCode ?? '',
+        zipCode: locations[index].address.postcode ?? '',
       })
     }
     clearLocations()
@@ -57,7 +63,6 @@ export default function useAutoComplete(props: Props = defaultProps) {
       return
     }
     const options: any[] | undefined = await props.source(searchTerm)
-    console.log(options)
     if (options) setLocations(options)
   }
 
@@ -80,14 +85,22 @@ export default function useAutoComplete(props: Props = defaultProps) {
     bindOption: {
       onClick: (e: any) => {
         const nodes = Array.from(listRef.current!.children)
-        selectOption(nodes.indexOf(e.target.closest('li')))
+        selectAddress(nodes.indexOf(e.target.closest('li')))
       },
     },
     bindInput: {
       value: textValue,
+      ref: useOutsideClick(clearLocations),
       onChange: (e: any) => onTextChange(e.target.value),
     },
     bindOptions: {
+      onKeyDown: (e: any) => {
+        AutoCompleteKeyPress({
+          e,
+          clearLocations,
+          selectAddress,
+        })
+      },
       ref: listRef,
     },
     bindOtherInputs: {

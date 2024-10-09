@@ -1,8 +1,8 @@
-import { LegacyRef, useEffect, useId } from 'react'
+import { LegacyRef, useContext, useEffect, useId } from 'react'
 import { SelectMonth } from './components/select-month'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
-import { monthNames } from './data/day&monthNames'
+import { monthNames } from './data'
 import {
   getDayWithoutHour,
   getNumberOfDaysInMonth,
@@ -14,8 +14,9 @@ import { InputDate } from './components/input-date'
 import './style.css'
 import { useOutsideClick } from './utils/use-outside-click'
 import { TDatePickerProps } from './types/date-picker.types'
-import { useDatePicker } from './hooks/date-picker.hook'
+import { TUseDatePicker } from './date-picker.hook'
 import { DatePickerKeyPress } from './keypress/keypress-controller/date-picker.keypress'
+import { DatePickerContext } from './Provider'
 
 export const DatePicker = ({
   maxDate,
@@ -27,7 +28,6 @@ export const DatePicker = ({
   const {
     isOpen,
     close,
-    toggleOpen,
     month,
     year,
     showSelectMonth,
@@ -36,11 +36,10 @@ export const DatePicker = ({
     setSelectedDate,
     nextMonth,
     prevMonth,
-    setMonth,
-    setYear,
     setTodayDate,
     eraseDate,
-  } = useDatePicker()
+  } = useContext<TUseDatePicker>(DatePickerContext)
+
   const ref = useOutsideClick(close)
   const pickerHeaderMonthId = useId()
 
@@ -106,13 +105,7 @@ export const DatePicker = ({
       className="date-picker"
       ref={ref as LegacyRef<HTMLDivElement> | undefined}
     >
-      <InputDate
-        validDate={selectedDate}
-        setValidDate={setSelectedDate}
-        openOrCloseDatePicker={toggleOpen}
-        maxDate={maxDate}
-        minDate={minDate}
-      />
+      <InputDate maxDate={maxDate} minDate={minDate} />
       <input
         className="hidden-input"
         type="hidden"
@@ -149,16 +142,7 @@ export const DatePicker = ({
           onClick={clickPressBehavior}
         >
           {showSelectMonth && (
-            <SelectMonth
-              minDate={minDate}
-              maxDate={maxDate}
-              currentMonth={month}
-              currentYear={year}
-              setCurrentMonth={setMonth}
-              setCurrentYear={setYear}
-              setShowSelectMonth={setShowSelectMonth}
-              showSelectMonth={showSelectMonth}
-            />
+            <SelectMonth minDate={minDate} maxDate={maxDate} />
           )}
 
           <div className="picker-header">

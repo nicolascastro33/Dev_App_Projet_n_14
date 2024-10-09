@@ -2,16 +2,12 @@ import SelectMenu from '../SelectMenu'
 import useAutoComplete from './auto-complete.hook'
 import { states } from '../../data/states-options'
 import './style.css'
-import { useContext } from 'react'
-import {
-  AutoCompleteContext,
-  TAutoCompleteContext,
-} from '../../autocomplete-provider'
 
-export default function AutoCompleteAddressForm() {
-  const { OptionsFilter } = useContext(
-    AutoCompleteContext
-  ) as TAutoCompleteContext
+export default function AutoCompleteAddressForm({
+  AddressApi,
+}: {
+  AddressApi: (searchTerm: string) => Promise<any[]>
+}) {
   const {
     bindInput,
     bindOtherInputs,
@@ -23,7 +19,7 @@ export default function AutoCompleteAddressForm() {
     address,
   } = useAutoComplete({
     onChange: (value) => console.log(value),
-    source: (searchTerm) => OptionsFilter(searchTerm),
+    source: (searchTerm) => AddressApi(searchTerm),
   })
 
   return (
@@ -37,14 +33,14 @@ export default function AutoCompleteAddressForm() {
           placeholder="Enter your address"
           {...bindInput}
         />
-
-        <ul className="autocomplete-locations" {...bindOptions}>
-          {!isBusy &&
-            !!locations?.length &&
-            locations.map((location, index) => (
+        {!isBusy && !!locations?.length && (
+          <ul className="autocomplete-locations" {...bindOptions}>
+            {locations.map((location, index) => (
               <li
                 key={index}
                 tabIndex={0}
+                data-location-index={index}
+                id={`location-${index}`}
                 className={`autocomplete-location ${
                   selectedIndex === index && 'selected-location'
                 }`}
@@ -53,7 +49,8 @@ export default function AutoCompleteAddressForm() {
                 {location.display_name}
               </li>
             ))}
-        </ul>
+          </ul>
+        )}
       </div>
 
       <label htmlFor="street">Street</label>

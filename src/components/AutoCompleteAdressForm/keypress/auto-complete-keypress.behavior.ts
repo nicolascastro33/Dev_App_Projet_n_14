@@ -2,15 +2,14 @@ import { isNewElementInParentElement } from '../utils'
 
 export const AutoCompleteKeyPressEnum = {
   InvalidData: 'INVALID_DATA',
-  SelectOption: 'SELECT_OPTION',
-  CloseAutoComplete: 'CLOSE_SELECT_MENU',
-  OpenOrCloseAutoComplete: 'OPEN_OR_CLOSE_SELECT_MENU',
+  SelectAddress: 'SELECT_ADDRESS',
+  ClearLocations: 'CLOSE_AUTO_COMPLETE',
   FocusNextElement: 'FOCUS_NEXT_ELEMENT',
   FocusPreviousElement: 'FOCUS_PREVIOUS_ELEMENT',
-  FocusNextElementAndCloseAutoComplete:
-    'FOCUS_NEXT_ELEMENT_AND_CLOSE_SELECT_MENU',
-  FocusPreviousElementAndCloseAutoComplete:
-    'FOCUS_PREVIOUS_ELEMENT_AND_CLOSE_SELECT_MENU',
+  FocusNextElementAndClearLocations:
+    'FOCUS_NEXT_ELEMENT_AND_CLEAR_LOCATIONS',
+  FocusPreviousElementAndClearLocations:
+    'FOCUS_PREVIOUS_ELEMENT_AND_CLEAR_LOCATIONS',
 } as const
 
 type TSelectMonthKeyPressBehavior = {
@@ -23,7 +22,6 @@ type TSelectMonthKeyPressProps = {
   shiftKey: boolean
   nextElement: HTMLElement | undefined
   prevElement: HTMLElement | undefined
-  activeMenu: boolean
 }
 
 export const AutoCompleteKeyPressBehavior = ({
@@ -32,7 +30,6 @@ export const AutoCompleteKeyPressBehavior = ({
   shiftKey,
   nextElement,
   prevElement,
-  activeMenu,
 }: TSelectMonthKeyPressProps): TSelectMonthKeyPressBehavior => {
   if (
     (eventTarget as HTMLInputElement).type === 'search' &&
@@ -46,46 +43,38 @@ export const AutoCompleteKeyPressBehavior = ({
   }
   const isNextElementInAutoComplete = isNewElementInParentElement({
     newElement: nextElement,
-    parentElementClassName: 'AutoComplete',
+    parentElementClassName: 'autocomplete-locations',
   })
 
   const isPrevElementInAutoComplete = isNewElementInParentElement({
     newElement: prevElement,
-    parentElementClassName: 'AutoComplete',
+    parentElementClassName: 'autocomplete-locations',
   })
 
-  if (eventTarget.className === 'AutoCompleteHeader' && keyPress === 'Enter') {
-    return { type: AutoCompleteKeyPressEnum.OpenOrCloseAutoComplete }
+  if (eventTarget.id.includes('location') && keyPress === 'Enter') {
+    return { type: AutoCompleteKeyPressEnum.SelectAddress }
   }
 
   if (keyPress === 'ArrowUp' || (keyPress === 'Tab' && shiftKey)) {
-    if (!isPrevElementInAutoComplete && activeMenu) {
+    if (!isPrevElementInAutoComplete) {
       return {
-        type: AutoCompleteKeyPressEnum.FocusPreviousElementAndCloseAutoComplete,
+        type: AutoCompleteKeyPressEnum.FocusPreviousElementAndClearLocations,
       }
     }
     return { type: AutoCompleteKeyPressEnum.FocusPreviousElement }
   }
 
   if (keyPress === 'ArrowDown' || (keyPress === 'Tab' && !shiftKey)) {
-    if (!isNextElementInAutoComplete && activeMenu) {
+    if (!isNextElementInAutoComplete) {
       return {
-        type: AutoCompleteKeyPressEnum.FocusNextElementAndCloseAutoComplete,
+        type: AutoCompleteKeyPressEnum.FocusNextElementAndClearLocations,
       }
     }
     return { type: AutoCompleteKeyPressEnum.FocusNextElement }
   }
 
-  if (keyPress === 'Enter' && eventTarget.className === 'option') {
-    return { type: AutoCompleteKeyPressEnum.SelectOption }
-  }
-
-  if (
-    keyPress === 'Escape' &&
-    eventTarget.className !== 'AutoCompleteHeader' &&
-    activeMenu
-  ) {
-    return { type: AutoCompleteKeyPressEnum.CloseAutoComplete }
+  if (keyPress === 'Escape') {
+    return { type: AutoCompleteKeyPressEnum.ClearLocations }
   }
   return { type: AutoCompleteKeyPressEnum.InvalidData }
 }

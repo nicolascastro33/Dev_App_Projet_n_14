@@ -1,6 +1,6 @@
 import { describe, assert, it } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
-import { useDatePicker } from '../../hooks/date-picker.hook'
+import { useDatePicker } from '../../date-picker.hook'
 import { getDayWithoutHour } from '../../utils'
 
 describe('Date Picker hook', () => {

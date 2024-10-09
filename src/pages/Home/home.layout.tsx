@@ -1,9 +1,9 @@
 import SelectMenu from '../../components/SelectMenu'
 import { departments } from '../../data/department-options'
-import { DatePicker } from '../../components/DatePicker'
+import { DatePicker } from '../../components/DatePicker/main'
 import { Loader, LoaderWrapper } from '../../utils/loader'
 import AutoCompleteAddressForm from '../../components/AutoCompleteAdressForm'
-import AutoCompleteProvider from '../../autocomplete-provider'
+import { AutocompleteApiFetch } from '../../fetch/autocomplete-api-fetch'
 
 function HomeLayout({
   saveEmployee,
@@ -50,9 +50,7 @@ function HomeLayout({
             minDate={new Date('1980-01-01')}
             maxDate={new Date()}
           />
-          <AutoCompleteProvider>
-            <AutoCompleteAddressForm />
-          </AutoCompleteProvider>
+          <AutoCompleteAddressForm AddressApi={AutocompleteApiFetch} />
 
           <label htmlFor="department">Department</label>
           <SelectMenu type="department" optionsProps={departments} />

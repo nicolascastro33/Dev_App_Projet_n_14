@@ -1,5 +1,3 @@
-import { Dispatch, SetStateAction } from 'react'
-
 export type TDate = {
   day: { name: string; maxValue: number; minValue: number }
   month: {
@@ -21,9 +19,6 @@ export type TSelectedDate = {
 }
 
 export type TInputDateProps = {
-  validDate: undefined | Date
-  setValidDate: Dispatch<SetStateAction<undefined | Date>>
-  openOrCloseDatePicker: any
   maxDate: Date | undefined
   minDate: Date | undefined
 }

@@ -1,4 +1,4 @@
-import { dayNames } from '../data/day&monthNames'
+import { dayNames } from '../data'
 import { TSelectedDate } from '../types/input-date.types'
 
 export const getNumberOfDaysInMonth = (year: number, month: number) => {

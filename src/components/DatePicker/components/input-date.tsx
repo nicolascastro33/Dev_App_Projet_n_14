@@ -3,22 +3,21 @@ import { InputDateKeyPress } from '../keypress/keypress-controller/input-date.ke
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCalendar } from '@fortawesome/free-solid-svg-icons'
 import { inputDateWrapperCssSelector, numberOfZeroYearData } from '../utils'
-import { useInputDate } from '../hooks/input-date.hook'
+import { useContext } from 'react'
+import { TUseDatePicker } from '../date-picker.hook'
+import { DatePickerContext } from '../Provider'
+import { GlobalDate } from '../data'
 
-export const InputDate = ({
-  validDate,
-  setValidDate,
-  openOrCloseDatePicker,
-  maxDate,
-  minDate,
-}: TInputDateProps) => {
-  const { date, selectedDate, setSelectedDate, buttonId, isValid } =
-    useInputDate({
-      validDate,
-      setValidDate,
-      maxYear: maxDate?.getFullYear(),
-      minYear: minDate?.getFullYear(),
-    })
+export const InputDate = ({ maxDate, minDate }: TInputDateProps) => {
+  const date = GlobalDate({ maxDate, minDate })
+
+  const {
+    inputDate,
+    setInputDate,
+    toggleOpen: openOrCloseDatePicker,
+    buttonToggleId: buttonId,
+    isValid,
+  } = useContext<TUseDatePicker>(DatePickerContext)
 
   const settingOnClick = (e: any) => {
     e.preventDefault()
@@ -39,9 +38,9 @@ export const InputDate = ({
       onKeyDown={(e: any) =>
         InputDateKeyPress({
           e,
-          selectedDate,
+          selectedDate: inputDate,
           date,
-          setSelectedDate,
+          setSelectedDate: setInputDate,
           openOrCloseDatePicker,
         })
       }
@@ -53,8 +52,8 @@ export const InputDate = ({
           className="input-date"
           tabIndex={0}
         >
-          {selectedDate.day && selectedDate.day < 10 && 0}
-          {selectedDate.day ? selectedDate.day : date.day.name}
+          {inputDate.day && inputDate.day < 10 && 0}
+          {inputDate.day ? inputDate.day : date.day.name}
         </span>
         /
         <span
@@ -63,8 +62,8 @@ export const InputDate = ({
           className="input-date"
           tabIndex={0}
         >
-          {selectedDate.month && selectedDate.month < 10 && 0}
-          {selectedDate.month ? selectedDate.month : date.month.name}
+          {inputDate.month && inputDate.month < 10 && 0}
+          {inputDate.month ? inputDate.month : date.month.name}
         </span>
         /
         <span
@@ -73,10 +72,10 @@ export const InputDate = ({
           className="input-date"
           tabIndex={0}
         >
-          {selectedDate.year &&
-            selectedDate.year.toString().length < 4 &&
-            numberOfZeroYearData(selectedDate.year).map((zero) => zero)}
-          {selectedDate.year ? selectedDate.year : date.year.name}
+          {inputDate.year &&
+            inputDate.year.toString().length < 4 &&
+            numberOfZeroYearData(inputDate.year).map((zero) => zero)}
+          {inputDate.year ? inputDate.year : date.year.name}
         </span>
       </p>
       <div
