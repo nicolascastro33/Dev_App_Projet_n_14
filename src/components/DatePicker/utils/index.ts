@@ -1,5 +1,5 @@
 import { dayNames } from '../data'
-import { TSelectedDate } from '../types/input-date.types'
+import { TSelectedDate } from '../types/date-picker.types'
 
 export const getNumberOfDaysInMonth = (year: number, month: number) => {
   return new Date(year, month + 1, 0).getDate()
@@ -26,7 +26,6 @@ export const range = (start: number, end: number) => {
     }),
     { result: [], current: start }
   )
-
   return result
 }
 

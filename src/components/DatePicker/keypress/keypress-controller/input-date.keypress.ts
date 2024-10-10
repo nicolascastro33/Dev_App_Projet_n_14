@@ -1,6 +1,6 @@
 import { InputDateKeyPressBehavior } from '../keypress-behavior/input-date-keypress'
-import { InputDateBehavior } from '../keypress-behavior/keypress-behavior-types'
-import { TInputDateKeyPressProps } from '../../types/input-date.types'
+import { InputDateBehavior } from '../../types/keypress-behavior-types'
+import { TInputDateKeyPressProps } from '../../types/date-picker.types'
 
 export const InputDateKeyPress = ({
   e,

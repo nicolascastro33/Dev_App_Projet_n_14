@@ -1,23 +1,24 @@
-import { TInputDateProps } from '../types/input-date.types'
 import { InputDateKeyPress } from '../keypress/keypress-controller/input-date.keypress'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCalendar } from '@fortawesome/free-solid-svg-icons'
 import { inputDateWrapperCssSelector, numberOfZeroYearData } from '../utils'
-import { useContext } from 'react'
+import { Context, useContext } from 'react'
 import { TUseDatePicker } from '../date-picker.hook'
 import { DatePickerContext } from '../Provider'
 import { GlobalDate } from '../data'
 
-export const InputDate = ({ maxDate, minDate }: TInputDateProps) => {
-  const date = GlobalDate({ maxDate, minDate })
-
+export const InputDate = () => {
   const {
     inputDate,
     setInputDate,
     toggleOpen: openOrCloseDatePicker,
     buttonToggleId: buttonId,
-    isValid,
-  } = useContext<TUseDatePicker>(DatePickerContext)
+    isDateValid: isValid,
+    minDate,
+    maxDate,
+  } = useContext<TUseDatePicker>(DatePickerContext as Context<TUseDatePicker>)
+
+  const date = GlobalDate({ maxDate, minDate })
 
   const settingOnClick = (e: any) => {
     e.preventDefault()

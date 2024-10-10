@@ -1,4 +1,4 @@
-import { TDate } from '../types/input-date.types'
+import { TDate } from '../types/date-picker.types'
 
 export const monthNames = [
   'January',

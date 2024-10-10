@@ -1,6 +1,6 @@
 import { PropsWithChildren, useEffect, useId, useMemo, useState } from 'react'
 import { getDayWithoutHour, isSelectedDateValid } from './utils'
-import { TSelectedDate } from './types/input-date.types'
+import { TSelectedDate } from './types/date-picker.types'
 
 interface Props extends PropsWithChildren<any> {
   opened?: boolean
@@ -10,6 +10,8 @@ interface Props extends PropsWithChildren<any> {
   month?: number
   isSelectMonthYearComponentOpen?: boolean
   yearOpenInSelectMonth?: number
+  minDate?: Date
+  maxDate?: Date
 }
 
 const defaultProps = {
@@ -29,7 +31,7 @@ type TSelecMonth = {
 
 type TInputDate = {
   buttonToggleId: string
-  isValid: Date | undefined
+  isDateValid: Date | undefined
   inputDate: TSelectedDate
   setInputDate: React.Dispatch<React.SetStateAction<TSelectedDate>>
 }
@@ -54,6 +56,8 @@ export type TUseDatePicker = {
   year: number
   setMonth: React.Dispatch<React.SetStateAction<number>>
   setYear: React.Dispatch<React.SetStateAction<number>>
+  minDate: Date | undefined
+  maxDate: Date | undefined
 } & TSelecMonth &
   TInputDate
 
@@ -87,17 +91,17 @@ export function useDatePicker(props: Props = defaultProps): TUseDatePicker {
     year: date ? date.getFullYear() : undefined,
   })
   const buttonToggleId = useId()
-  const isValid = useMemo<undefined | Date>(
+  const isDateValid = useMemo<undefined | Date>(
     () => isSelectedDateValid(inputDate),
     [inputDate]
   )
 
   useEffect(() => {
-    setDate(isValid)
-  }, [isValid])
+    setDate(isDateValid)
+  }, [isDateValid])
 
   useEffect(() => {
-    if (date === isValid) return
+    if (date === isDateValid) return
     if (date) {
       setInputDate({
         day: date.getDate(),
@@ -176,8 +180,10 @@ export function useDatePicker(props: Props = defaultProps): TUseDatePicker {
     isSelectMonthYearComponentOpen,
     yearOpenInSelectMonth,
     buttonToggleId,
-    isValid,
+    isDateValid,
     inputDate,
     setInputDate,
+    minDate: props.minDate,
+    maxDate: props.maxDate,
   }
 }

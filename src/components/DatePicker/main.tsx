@@ -10,14 +10,8 @@ export const DatePicker = ({
   id,
 }: TDatePickerProps) => {
   return (
-    <Provider>
-      <DatePickerLayout
-        maxDate={maxDate}
-        minDate={minDate}
-        required={required}
-        name={name}
-        id={id}
-      />
+    <Provider maxDate={maxDate} minDate={minDate}>
+      <DatePickerLayout required={required} name={name} id={id} />
     </Provider>
   )
 }

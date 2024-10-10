@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { InputDateKeyPressBehavior as KeyPressBehavior } from '../../keypress/keypress-behavior/input-date-keypress'
-import { InputDateBehavior as BehaviorType } from '../../keypress/keypress-behavior/keypress-behavior-types'
+import { InputDateKeyPressBehavior as KeyPressBehavior } from '../keypress/keypress-behavior/input-date-keypress'
+import { InputDateBehavior as BehaviorType } from '../types/keypress-behavior-types'
 
 describe('Input date keypress behavior', () => {
   it('should return an Focus next Element behavior when you enter a tab button', () => {

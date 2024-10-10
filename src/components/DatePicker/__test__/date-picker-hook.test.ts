@@ -1,7 +1,7 @@
 import { describe, assert, it } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
-import { useDatePicker } from '../../date-picker.hook'
-import { getDayWithoutHour } from '../../utils'
+import { useDatePicker } from '../date-picker.hook'
+import { getDayWithoutHour } from '../utils'
 
 describe('Date Picker hook', () => {
   it('Should be closed by default', () => {
@@ -107,5 +107,40 @@ describe('Date Picker hook', () => {
       result.current.selectedDate?.toISOString(),
       todayDate.toISOString()
     )
+  })
+})
+
+describe('Select Month Hook', () => {
+  it('should return the year put in the props and the year should be close', () => {
+    const { result } = renderHook(useDatePicker)
+    assert.equal(result.current.yearOpenInSelectMonth, new Date().getFullYear())
+    assert.equal(result.current.isSelectMonthYearComponentOpen, false)
+  })
+  it('should open the new year selected', () => {
+    const { result } = renderHook(() =>
+      useDatePicker({ yearOpenInSelectMonth: 2005 })
+    )
+    act(() => result.current.toggleSelectMonthYearComponent(1999))
+    assert.equal(result.current.yearOpenInSelectMonth, 1999)
+    assert.equal(result.current.isSelectMonthYearComponentOpen, true)
+  })
+
+  it('should close the year', () => {
+    const { result } = renderHook(() =>
+      useDatePicker({
+        yearOpenInSelectMonth: 2000,
+        isSelectMonthYearComponentOpen: true,
+      })
+    )
+    act(() => result.current.toggleSelectMonthYearComponent(2000))
+    assert.equal(result.current.yearOpenInSelectMonth, 2000)
+    assert.equal(result.current.isSelectMonthYearComponentOpen, false)
+  })
+})
+
+describe('Input Date Hook', () => {
+  it('should render a buttonId', () => {
+    const { result } = renderHook(useDatePicker)
+    assert(result.current.buttonToggleId)
   })
 })

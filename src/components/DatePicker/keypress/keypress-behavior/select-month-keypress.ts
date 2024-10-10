@@ -3,7 +3,7 @@ import {
   SelectMonthBehavior,
   TSelectMonthBehavior,
   TSelectMonthPropsBehavior,
-} from './keypress-behavior-types'
+} from '../../types/keypress-behavior-types'
 
 export const SelectMonthKeyPressBehavior = ({
   eventTarget,

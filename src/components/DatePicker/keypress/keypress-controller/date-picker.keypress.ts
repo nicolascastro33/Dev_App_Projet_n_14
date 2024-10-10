@@ -1,6 +1,6 @@
 import { TDatePickerKeyPressProps } from '../../types/date-picker.types'
 import { DatePickerKeyPressBehavior } from '../keypress-behavior/date-picker-keypress'
-import { DatePickerBehavior } from '../keypress-behavior/keypress-behavior-types'
+import { DatePickerBehavior } from '../../types/keypress-behavior-types'
 
 export const DatePickerKeyPress = ({
   e,
@@ -13,6 +13,7 @@ export const DatePickerKeyPress = ({
   setTodayDate,
   eraseDate,
 }: TDatePickerKeyPressProps) => {
+ 
   if (showSelectMonth) return
   e.preventDefault()
   const allFocusableElements = document.querySelectorAll(

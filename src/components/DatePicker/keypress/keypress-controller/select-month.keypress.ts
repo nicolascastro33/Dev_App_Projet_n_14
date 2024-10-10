@@ -1,15 +1,15 @@
-import { SelectMonthBehavior } from '../keypress-behavior/keypress-behavior-types'
+import { SelectMonthBehavior } from '../../types/keypress-behavior-types'
 import { SelectMonthKeyPressBehavior } from '../keypress-behavior/select-month-keypress'
-import { TSelectMonthKeyDownProps } from '../../types/select-month.types'
+import { TSelectMonthKeyPressProps } from '../../types/date-picker.types'
 
-export const SelectMonthKeyDown = ({
+export const SelectMonthKeyPress = ({
   e,
   showSelectMonth,
   setShowSelectMonth,
   yearOpen,
   clickOnYear,
   selectAMonth,
-}: TSelectMonthKeyDownProps) => {
+}: TSelectMonthKeyPressProps) => {
   const keyPress = e.key
   if (!showSelectMonth) return
   e.preventDefault()

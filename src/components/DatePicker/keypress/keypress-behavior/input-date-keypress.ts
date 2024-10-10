@@ -2,7 +2,7 @@ import {
   TInputDateBehavior,
   InputDateBehavior,
   TInputDatePropsBehavior,
-} from './keypress-behavior-types'
+} from '../../types/keypress-behavior-types'
 
 export const InputDateKeyPressBehavior = ({
   shiftKey,

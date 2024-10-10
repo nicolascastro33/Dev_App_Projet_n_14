@@ -1,4 +1,4 @@
-import { LegacyRef, useContext, useEffect, useId } from 'react'
+import { Context, LegacyRef, useContext, useEffect, useId } from 'react'
 import { SelectMonth } from './components/select-month'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
@@ -13,18 +13,12 @@ import {
 import { InputDate } from './components/input-date'
 import './style.css'
 import { useOutsideClick } from './utils/use-outside-click'
-import { TDatePickerProps } from './types/date-picker.types'
+import { TDatePickerLayoutProps } from './types/date-picker.types'
 import { TUseDatePicker } from './date-picker.hook'
 import { DatePickerKeyPress } from './keypress/keypress-controller/date-picker.keypress'
 import { DatePickerContext } from './Provider'
 
-export const DatePicker = ({
-  maxDate,
-  minDate,
-  required,
-  name,
-  id,
-}: TDatePickerProps) => {
+export const DatePicker = ({ required, name, id }: TDatePickerLayoutProps) => {
   const {
     isOpen,
     close,
@@ -38,7 +32,9 @@ export const DatePicker = ({
     prevMonth,
     setTodayDate,
     eraseDate,
-  } = useContext<TUseDatePicker>(DatePickerContext)
+    minDate,
+    maxDate,
+  } = useContext<TUseDatePicker>(DatePickerContext as Context<TUseDatePicker>)
 
   const ref = useOutsideClick(close)
   const pickerHeaderMonthId = useId()
@@ -105,7 +101,7 @@ export const DatePicker = ({
       className="date-picker"
       ref={ref as LegacyRef<HTMLDivElement> | undefined}
     >
-      <InputDate maxDate={maxDate} minDate={minDate} />
+      <InputDate />
       <input
         className="hidden-input"
         type="hidden"
@@ -141,9 +137,7 @@ export const DatePicker = ({
           }
           onClick={clickPressBehavior}
         >
-          {showSelectMonth && (
-            <SelectMonth minDate={minDate} maxDate={maxDate} />
-          )}
+          {showSelectMonth && <SelectMonth />}
 
           <div className="picker-header">
             <button

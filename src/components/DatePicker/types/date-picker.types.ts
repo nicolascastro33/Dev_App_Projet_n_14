@@ -6,6 +6,8 @@ export type TDatePickerProps = {
   maxDate: undefined | Date
 }
 
+export type TDatePickerLayoutProps = Omit<TDatePickerProps, 'minDate' | 'maxDate'>
+
 export type TDatePickerKeyPressProps = {
   e: any
   showSelectMonth: boolean
@@ -18,3 +20,40 @@ export type TDatePickerKeyPressProps = {
   eraseDate: (e: any) => void
 }
 
+export type TDate = {
+  day: { name: string; maxValue: number; minValue: number }
+  month: {
+    name: string
+    maxValue: number
+    minValue: number
+  }
+  year: {
+    name: string
+    maxValue: number
+    minValue: number
+  }
+}
+
+export type TSelectedDate = {
+  day: number | undefined
+  month: number | undefined
+  year: number | undefined
+}
+
+
+export type TInputDateKeyPressProps = {
+  e: any
+  selectedDate: TSelectedDate
+  date: TDate
+  openOrCloseDatePicker: (e: any) => void
+  setSelectedDate: React.Dispatch<React.SetStateAction<TSelectedDate>>
+}
+
+export type TSelectMonthKeyPressProps = {
+  e: any
+  showSelectMonth: boolean
+  setShowSelectMonth: React.Dispatch<React.SetStateAction<boolean>>
+  yearOpen: number
+  clickOnYear: (year: number) => void
+  selectAMonth: (indexMonth: number, year: number) => void
+}

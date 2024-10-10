@@ -1,12 +1,11 @@
-import { useContext, useEffect } from 'react'
+import { Context, useContext, useEffect } from 'react'
 import { monthNames } from '../data'
 import { getAllYears, isDisabled } from '../utils'
-import { TSelectMonthProps } from '../types/select-month.types'
-import { SelectMonthKeyDown } from '../keypress/keypress-controller/select-month.keydown'
+import { SelectMonthKeyPress } from '../keypress/keypress-controller/select-month.keypress'
 import { DatePickerContext } from '../Provider'
 import { TUseDatePicker } from '../date-picker.hook'
 
-export const SelectMonth = ({ maxDate, minDate }: TSelectMonthProps) => {
+export const SelectMonth = () => {
   const {
     showSelectMonth,
     setShowSelectMonth,
@@ -17,7 +16,9 @@ export const SelectMonth = ({ maxDate, minDate }: TSelectMonthProps) => {
     toggleSelectMonthYearComponent: clickOnYear,
     isSelectMonthYearComponentOpen: isOpen,
     yearOpenInSelectMonth: yearOpen,
-  } = useContext<TUseDatePicker>(DatePickerContext)
+    minDate,
+    maxDate
+  } = useContext<TUseDatePicker>(DatePickerContext as Context<TUseDatePicker>)
 
   const closeSelectMonth = (e: any) => {
     if (!e.target.closest('.select-month')) setShowSelectMonth(false)
@@ -39,7 +40,7 @@ export const SelectMonth = ({ maxDate, minDate }: TSelectMonthProps) => {
       className="select-month-wrapper"
       onClick={closeSelectMonth}
       onKeyDown={(e: any) =>
-        SelectMonthKeyDown({
+        SelectMonthKeyPress({
           e,
           showSelectMonth,
           setShowSelectMonth,

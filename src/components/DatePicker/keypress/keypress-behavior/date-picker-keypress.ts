@@ -3,7 +3,7 @@ import {
   DatePickerBehavior,
   TDatePickerBehavior,
   TDatePickerPropsBehavior,
-} from './keypress-behavior-types'
+} from '../../types/keypress-behavior-types'
 
 export const DatePickerKeyPressBehavior = ({
   eventTarget,

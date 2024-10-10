@@ -41,8 +41,7 @@ export default function useAutoComplete(props: Props = defaultProps) {
   }
 
   function selectAddress(index: number) {
-    if (index > -1 && props.onChange) {
-      props.onChange(locations[index])
+    if (index > -1) {
       setTextValue(locations[index].display_name)
       setAddress({
         street:
@@ -55,6 +54,7 @@ export default function useAutoComplete(props: Props = defaultProps) {
         zipCode: locations[index].address.postcode ?? '',
       })
     }
+    if (props.onChange) props.onChange(locations[index])
     clearLocations()
   }
 
@@ -113,5 +113,8 @@ export default function useAutoComplete(props: Props = defaultProps) {
     locations,
     selectedIndex,
     address,
+    getlocations,
+    selectAddress,
+    textValue
   }
 }
