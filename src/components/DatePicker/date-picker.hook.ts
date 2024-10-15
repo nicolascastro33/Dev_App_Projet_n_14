@@ -77,6 +77,7 @@ export function useDatePicker(props: Props = defaultProps): TUseDatePicker {
     }
   }, [date])
 
+
   // Select Month Component variables
   const [isSelectMonthYearComponentOpen, setIsSelectMonthYearComponentOpen] =
     useState<boolean>(props.isSelectMonthYearComponentOpen!)
@@ -142,6 +143,7 @@ export function useDatePicker(props: Props = defaultProps): TUseDatePicker {
     },
     setTodayDate: () => {
       setDate(getDayWithoutHour)
+      setIsOpen(false)
     },
     nextMonth: () => {
       if (month < 11) {

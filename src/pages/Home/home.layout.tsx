@@ -3,16 +3,17 @@ import { departments } from '../../data/department-options'
 import { DatePicker } from '../../components/DatePicker/main'
 import { Loader, LoaderWrapper } from '../../utils/loader'
 import AutoCompleteAddressForm from '../../components/AutoCompleteAdressForm'
-import { AutocompleteApiFetch } from '../../fetch/autocomplete-api-fetch'
 
 function HomeLayout({
   saveEmployee,
   isLoading,
   errorSaving,
+  autocompleteApi
 }: {
   saveEmployee(e: any): void
   isLoading: boolean
   errorSaving: boolean
+  autocompleteApi : (searchTerm: string) => Promise<any[]>
 }) {
   return (
     <main>
@@ -50,7 +51,7 @@ function HomeLayout({
             minDate={new Date('1980-01-01')}
             maxDate={new Date()}
           />
-          <AutoCompleteAddressForm AddressApi={AutocompleteApiFetch} />
+          <AutoCompleteAddressForm AddressApi={autocompleteApi} />
 
           <label htmlFor="department">Department</label>
           <SelectMenu type="department" optionsProps={departments} />

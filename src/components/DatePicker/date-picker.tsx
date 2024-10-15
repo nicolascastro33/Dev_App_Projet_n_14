@@ -39,6 +39,7 @@ export const DatePicker = ({ required, name, id }: TDatePickerLayoutProps) => {
   const ref = useOutsideClick(close)
   const pickerHeaderMonthId = useId()
 
+
   useEffect(() => {
     if (isOpen) {
       const pickerHeaderMonth = document.getElementById(
@@ -87,13 +88,14 @@ export const DatePicker = ({ required, name, id }: TDatePickerLayoutProps) => {
       todayButton?.focus()
       return
     }
-    if (eventClassName === 'seven-col-grid' || e.target.disabled) {
-      const firstDay = [...document.querySelectorAll('#day')].find(
-        (day) => day.getAttribute('data-day') === '1'
-      ) as HTMLElement
-      firstDay?.focus()
+    if (!(eventClassName === 'seven-col-grid' || e.target.disabled)) {
       return
     }
+    const firstDay = [...document.querySelectorAll('#day')].find(
+      (day) => day.getAttribute('data-day') === '1'
+    ) as HTMLElement
+    firstDay?.focus()
+    return
   }
 
   return (

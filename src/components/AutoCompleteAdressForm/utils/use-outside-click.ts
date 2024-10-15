@@ -1,7 +1,7 @@
 import { useRef, useEffect } from 'react'
 
 export const useOutsideClick = (callback: () => void) => {
-  const ref = useRef<HTMLInputElement | undefined>()
+  const ref = useRef<HTMLInputElement>(null)
   useEffect(() => {
     const handleClick = (event: any) => {
       if (ref.current && !ref.current.contains(event.target)) {
@@ -13,5 +13,6 @@ export const useOutsideClick = (callback: () => void) => {
       document.removeEventListener('click', handleClick)
     }
   }, [ref])
+
   return ref
 }

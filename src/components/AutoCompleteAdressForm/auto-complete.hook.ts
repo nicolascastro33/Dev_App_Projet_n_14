@@ -21,7 +21,7 @@ const defaultProps = {
 
 export default function useAutoComplete(props: Props = defaultProps) {
   const [myTimeout, setMyTimeOut] = useState(setTimeout(() => {}, 0))
-  const listRef = useRef<HTMLUListElement>()
+  const listRef = useRef<HTMLUListElement>(null)
   const [locations, setLocations] = useState<Array<any>>([])
   const [isBusy, setBusy] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState(-1)
@@ -44,14 +44,10 @@ export default function useAutoComplete(props: Props = defaultProps) {
     if (index > -1) {
       setTextValue(locations[index].display_name)
       setAddress({
-        street:
-          locations[index].address.road ??
-          locations[index].address.neighbourhood ??
-          locations[index].address.county ??
-          '',
-        city: locations[index].address.city ?? '',
-        state: locations[index].address.state ?? '',
-        zipCode: locations[index].address.postcode ?? '',
+        street: locations[index].street,
+        city: locations[index].city,
+        state: locations[index].state,
+        zipCode: locations[index].zipCode,
       })
     }
     if (props.onChange) props.onChange(locations[index])
@@ -115,6 +111,6 @@ export default function useAutoComplete(props: Props = defaultProps) {
     address,
     getlocations,
     selectAddress,
-    textValue
+    textValue,
   }
 }

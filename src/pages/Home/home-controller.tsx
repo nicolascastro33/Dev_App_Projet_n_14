@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Context, useContext, useState } from 'react'
 import { v4 as uuid } from 'uuid'
 import HomeLayout from './home.layout'
 import { useDispatch } from 'react-redux'
@@ -6,12 +6,16 @@ import { addOneNewEmployee } from '../../lib/employees/usecases/add-one-new-empl
 import Modal from '../../components/Modal'
 import { AppDispatch } from '../../lib/create-store'
 import { EmployeesInfo } from '../../lib/employees/model/employee.gateway'
+import { MainContext, TMainContext } from '../../Provider'
 
 function HomeController() {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [error, setError] = useState<boolean>(false)
   const [isModalOpened, setIsModalOpened] = useState<boolean>(false)
   const dispatch = useDispatch<AppDispatch>()
+  const { autocompleteApi } = useContext<TMainContext>(
+    MainContext as Context<TMainContext>
+  )
 
   const saveEmployee = (e: any): void => {
     e.preventDefault()
@@ -62,6 +66,7 @@ function HomeController() {
         saveEmployee={saveEmployee}
         isLoading={isLoading}
         errorSaving={error}
+        autocompleteApi={autocompleteApi}
       />
     </>
   )
