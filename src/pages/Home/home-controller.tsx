@@ -3,7 +3,7 @@ import { v4 as uuid } from 'uuid'
 import HomeLayout from './home.layout'
 import { useDispatch } from 'react-redux'
 import { addOneNewEmployee } from '../../lib/employees/usecases/add-one-new-employee'
-import Modal from '../../components/Modal'
+import Modal from 'modal-component-openclassrooms'
 import { AppDispatch } from '../../lib/create-store'
 import { EmployeesInfo } from '../../lib/employees/model/employee.gateway'
 import { MainContext, TMainContext } from '../../Provider'
@@ -62,6 +62,7 @@ function HomeController() {
           message="Employee Created!"
         />
       )}
+
       <HomeLayout
         saveEmployee={saveEmployee}
         isLoading={isLoading}

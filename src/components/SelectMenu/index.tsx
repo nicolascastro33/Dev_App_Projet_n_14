@@ -1,4 +1,3 @@
-import { LegacyRef } from 'react'
 import { SelectMenuKeyPress } from './keypress/select-menu-keypress.controller'
 import arrow from '../../assets/arrow.png'
 import './style.css'
@@ -33,7 +32,7 @@ function SelectMenu({ optionsProps, type, value }: TSelectMenu) {
   return (
     <div
       className={`selectMenu ${activeMenu ? 'activeMenu' : ''}`}
-      ref={ref as LegacyRef<HTMLDivElement> | undefined}
+      ref={ref}
       onKeyDown={(e) =>
         SelectMenuKeyPress({
           e,

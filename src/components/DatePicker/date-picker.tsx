@@ -1,4 +1,4 @@
-import { Context, LegacyRef, useContext, useEffect, useId } from 'react'
+import { Context, useContext, useEffect, useId } from 'react'
 import { SelectMonth } from './components/select-month'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
@@ -101,7 +101,7 @@ export const DatePicker = ({ required, name, id }: TDatePickerLayoutProps) => {
   return (
     <div
       className="date-picker"
-      ref={ref as LegacyRef<HTMLDivElement> | undefined}
+      ref={ref}
     >
       <InputDate />
       <input

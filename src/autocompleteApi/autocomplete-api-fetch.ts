@@ -21,20 +21,26 @@ type TDataModelProps = {
     neighbourhood?: string
     county?: string
     village?: string
+    water?: string
   }
 }
 
 const dataModel = (data: TDataModelProps[]): TDataModel[] => {
   const newData: TDataModel[] = []
+  console.log(data)
   data.forEach((element) =>
     newData.push({
       display_name: element.display_name ?? '',
       street:
         element.address.road ??
         element.address.neighbourhood ??
+        element.address.water ??
+        '',
+      city:
+        element.address.city ??
+        element.address.village ??
         element.address.county ??
         '',
-      city: element.address.city ?? element.address.village ?? '',
       state: element.address.state ?? '',
       zipCode: element.address.postcode ?? '',
     })
