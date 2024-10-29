@@ -75,6 +75,7 @@ export const DatePicker = ({ required, name, id, resetData }: TDatePickerLayoutP
   }
 
   const clickPressBehavior = (e: any) => {
+    e.preventDefault()
     const eventClassName = e.target.className
     const buttonMonth = document.getElementById(pickerHeaderMonthId)
     if (
