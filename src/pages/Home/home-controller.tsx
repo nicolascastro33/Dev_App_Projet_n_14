@@ -12,10 +12,19 @@ function HomeController() {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [error, setError] = useState<boolean>(false)
   const [isModalOpened, setIsModalOpened] = useState<boolean>(false)
+  const [resetForm, setResetForm] = useState<boolean>(false)
   const dispatch = useDispatch<AppDispatch>()
   const { autocompleteApi } = useContext<TMainContext>(
     MainContext as Context<TMainContext>
   )
+
+  const reset = (e: any) => {
+    e.target.reset()
+    setTimeout(() => {
+      setResetForm(true)
+    }, 100)
+    setResetForm(false)
+  }
 
   const saveEmployee = (e: any): void => {
     e.preventDefault()
@@ -49,7 +58,7 @@ function HomeController() {
           setIsLoading(false)
           setError(false)
           setIsModalOpened(true)
-          e.target.reset()
+          reset(e)
         })
     }
   }
@@ -68,6 +77,7 @@ function HomeController() {
         isLoading={isLoading}
         errorSaving={error}
         autocompleteApi={autocompleteApi}
+        resetForm={resetForm}
       />
     </>
   )

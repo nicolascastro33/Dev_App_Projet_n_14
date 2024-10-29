@@ -4,6 +4,7 @@ export type TDatePickerProps = {
   required: boolean | undefined
   minDate: undefined | Date
   maxDate: undefined | Date
+  resetData:boolean
 }
 
 export type TDatePickerLayoutProps = Omit<TDatePickerProps, 'minDate' | 'maxDate'>

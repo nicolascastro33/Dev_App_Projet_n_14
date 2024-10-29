@@ -8,12 +8,15 @@ function HomeLayout({
   saveEmployee,
   isLoading,
   errorSaving,
-  autocompleteApi
+  autocompleteApi,
+  resetForm
 }: {
   saveEmployee(e: any): void
   isLoading: boolean
   errorSaving: boolean
-  autocompleteApi : (searchTerm: string) => Promise<any[]>
+  autocompleteApi: (searchTerm: string) => Promise<any[]>
+  resetForm:boolean
+
 }) {
   return (
     <main>
@@ -42,6 +45,7 @@ function HomeLayout({
             required={true}
             minDate={new Date('1980-01-01')}
             maxDate={new Date()}
+            resetData={resetForm}
           />
           <label htmlFor="startDate">Start Date</label>
           <DatePicker
@@ -50,11 +54,13 @@ function HomeLayout({
             required={true}
             minDate={new Date('1980-01-01')}
             maxDate={new Date()}
+            resetData={resetForm}
+
           />
-          <AutoCompleteAddressForm AddressApi={autocompleteApi} />
+          <AutoCompleteAddressForm AddressApi={autocompleteApi} resetData={resetForm}/>
 
           <label htmlFor="department">Department</label>
-          <SelectMenu type="department" optionsProps={departments} />
+          <SelectMenu type="department" optionsProps={departments} resetData={resetForm}/>
           <div className="buttonWrapper">
             <button className="saveEmployeeButton" type="submit">
               Save

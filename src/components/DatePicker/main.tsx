@@ -8,10 +8,11 @@ export const DatePicker = ({
   required,
   name,
   id,
+  resetData
 }: TDatePickerProps) => {
   return (
     <Provider maxDate={maxDate} minDate={minDate}>
-      <DatePickerLayout required={required} name={name} id={id} />
+      <DatePickerLayout required={required} name={name} id={id} resetData={resetData}/>
     </Provider>
   )
 }

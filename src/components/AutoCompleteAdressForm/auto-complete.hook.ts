@@ -1,4 +1,4 @@
-import { PropsWithChildren, useRef, useState } from 'react'
+import { PropsWithChildren, useEffect, useRef, useState } from 'react'
 import { useOutsideClick } from './utils/use-outside-click'
 import { AutoCompleteKeyPress } from './keypress/auto-complete-keypress.controller'
 
@@ -13,6 +13,7 @@ interface Props extends PropsWithChildren<any> {
   delay?: number
   source?: (props?: any) => any
   onChange?: (location: any) => void
+  resetData?: boolean
 }
 
 const defaultProps = {
@@ -32,6 +33,18 @@ export default function useAutoComplete(props: Props = defaultProps) {
     state: '',
     zipCode: '',
   })
+
+  useEffect(() => {
+    if (props.resetData) {
+      setTextValue('')
+      setAddress({
+        street: '',
+        city: '',
+        state: '',
+        zipCode: '',
+      })
+    }
+  }, [props.resetData])
 
   function delayInvoke(cb: () => void) {
     if (myTimeout) {

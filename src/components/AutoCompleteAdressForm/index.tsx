@@ -5,8 +5,10 @@ import './style.css'
 
 export default function AutoCompleteAddressForm({
   AddressApi,
+  resetData,
 }: {
   AddressApi: (searchTerm: string) => Promise<any[]>
+  resetData: boolean
 }) {
   const {
     bindInput,
@@ -20,6 +22,7 @@ export default function AutoCompleteAddressForm({
   } = useAutoComplete({
     onChange: (value) => console.log(value),
     source: (searchTerm) => AddressApi(searchTerm),
+    resetData,
   })
 
   return (
@@ -55,17 +58,30 @@ export default function AutoCompleteAddressForm({
 
       <label htmlFor="street">Street</label>
       <input
+        type="text"
         name="street"
         value={address.street}
         {...bindOtherInputs}
         required
       />
       <label htmlFor="city">City</label>
-      <input name="city" value={address.city} {...bindOtherInputs} required />
+      <input
+        name="city"
+        type="text"
+        value={address.city}
+        {...bindOtherInputs}
+        required
+      />
       <label htmlFor="state">State</label>
-      <SelectMenu type="state" optionsProps={states} value={address.state} />
+      <SelectMenu
+        type="state"
+        optionsProps={states}
+        value={address.state}
+        resetData={resetData}
+      />
       <label htmlFor="zipCode">Zip Code</label>
       <input
+        type="text"
         name="zipCode"
         value={address.zipCode}
         {...bindOtherInputs}

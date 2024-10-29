@@ -7,6 +7,7 @@ export type TSelectMenu = {
   optionsProps: SelectMenuOptionsType
   type: string
   value?: string
+  resetData: boolean
 }
 
 export type SelectMenuOptionsType = {
@@ -14,7 +15,7 @@ export type SelectMenuOptionsType = {
   abbreviation: string
 }[]
 
-function SelectMenu({ optionsProps, type, value }: TSelectMenu) {
+function SelectMenu({ optionsProps, type, value, resetData }: TSelectMenu) {
   const {
     activeMenu,
     ref,
@@ -27,6 +28,7 @@ function SelectMenu({ optionsProps, type, value }: TSelectMenu) {
   } = useSelectMenu({
     optionsProps,
     value,
+    resetData,
   })
 
   return (

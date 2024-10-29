@@ -6,6 +6,7 @@ interface Props extends PropsWithChildren<any> {
   opened?: boolean
   optionsProps?: SelectMenuOptionsType
   value?: string
+  resetData?: boolean
 }
 
 const defaultProps = {
@@ -20,6 +21,10 @@ export function useSelectMenu(props: Props = defaultProps) {
   const [options, setOptions] = useState<SelectMenuOptionsType>(
     props.optionsProps!
   )
+
+  useEffect(() => {
+    if (props.resetData) setSelectedItem(null)
+  }, [props.resetData])
 
   useEffect(() => {
     if (props.value) setSelectedItem(props.value)

@@ -21,7 +21,7 @@ function EmployeesLayout() {
     { title: 'State', field: 'state' },
     { title: 'Zip Code', field: 'zipCode' },
   ]
-  const entries = [10, 25, 50, 100]
+  const entries = [5, 10, 25, 50, 100]
 
   const employeeNode: ReactNode = (() => {
     switch (viewModel.info.type) {

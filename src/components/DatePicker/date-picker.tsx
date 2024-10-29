@@ -18,7 +18,7 @@ import { TUseDatePicker } from './date-picker.hook'
 import { DatePickerKeyPress } from './keypress/keypress-controller/date-picker.keypress'
 import { DatePickerContext } from './Provider'
 
-export const DatePicker = ({ required, name, id }: TDatePickerLayoutProps) => {
+export const DatePicker = ({ required, name, id, resetData }: TDatePickerLayoutProps) => {
   const {
     isOpen,
     close,
@@ -39,6 +39,9 @@ export const DatePicker = ({ required, name, id }: TDatePickerLayoutProps) => {
   const ref = useOutsideClick(close)
   const pickerHeaderMonthId = useId()
 
+  useEffect(() => {
+    if(resetData)eraseDate()
+  },[resetData])
 
   useEffect(() => {
     if (isOpen) {
