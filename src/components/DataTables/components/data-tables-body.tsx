@@ -44,7 +44,7 @@ export const DataTablesBody = ({
       <tbody>
         {data.length === 0 ? (
           <tr className="no-matching">
-            <td>No matching records found</td>
+            <td colSpan={9}>No matching records found</td>
           </tr>
         ) : (
           data?.slice(startPoint, endPoint).map((employee, index) => (

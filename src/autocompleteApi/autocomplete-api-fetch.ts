@@ -27,7 +27,6 @@ type TDataModelProps = {
 
 const dataModel = (data: TDataModelProps[]): TDataModel[] => {
   const newData: TDataModel[] = []
-  console.log(data)
   data.forEach((element) =>
     newData.push({
       display_name: element.display_name ?? '',

@@ -25,6 +25,15 @@ function DataTables<Data extends object>({
     if (sortColumn !== '') {
       const sortedData = Array.from(
         data.sort((firstRow, otherRow) => {
+          if (sortColumn === 'startDate' || sortColumn === 'dateOfBirth') {
+            const firstRowDate = new Date(
+              (firstRow as any)[sortColumn].split('-').reverse().join(' ')
+            )
+            const otherRowDate = new Date(
+              (otherRow as any)[sortColumn].split('-').reverse().join(' ')
+            )
+            return (firstRowDate as any) - (otherRowDate as any)
+          }
           return (firstRow as any)[sortColumn]
             .toString()
             .localeCompare((otherRow as any)[sortColumn].toString())
@@ -94,6 +103,7 @@ function DataTables<Data extends object>({
       if (isInclude) filteredData.push(employee)
     })
     setData(filteredData)
+    setCurrentPage(1)
   }
 
   return (
